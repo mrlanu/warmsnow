@@ -1,0 +1,18 @@
+#This file is the entrypoint for spring to know where to look for the configuration file and hold the initial configuration
+spring:
+  application:
+    name: discovery-server #name of the application
+
+server:
+  port: 8001 #the default port used for eureka servers
+
+eureka:
+  instance:
+    prefer-ip-address: false
+  client:
+    region: default
+    registryFetchIntervalSeconds: 3
+    serviceUrl:
+      defaultZone: http://localhost:8001/eureka/
+    register-with-eureka: false
+    fetch-registry: false
