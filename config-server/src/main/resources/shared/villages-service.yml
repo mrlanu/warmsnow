@@ -1,0 +1,19 @@
+spring:
+  data:
+    mongodb:
+      host: localhost #should be localhost (without Docker)
+      port: 27017
+      username: mrlanu
+      password: mrlanu
+      database: warmsnow
+  application:
+    name: villages-service
+
+eureka:
+  instance:
+    instance-id: ${spring.application.name}:${spring.application.instance-id:${random.value}}
+
+server:
+  servlet:
+    context-path: /villages
+  port: ${PORT:0}
