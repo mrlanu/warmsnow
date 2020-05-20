@@ -1,0 +1,38 @@
+spring:
+  application:
+    name: gateway-server
+
+eureka:
+  instance:
+    instance-id: ${spring.application.name}:${spring.application.instance-id:${random.value}}
+
+server:
+  port: 8080
+
+ribbon:
+  ReadTimeout: 20000
+  ConnectTimeout: 20000
+
+zuul:
+  ignoredServices: '*'
+  host:
+    connect-timeout-millis: 20000
+    socket-timeout-millis: 20000
+  routes:
+    auth-service:
+      path: /uaa/** #path that will be intercepted
+      url: auth-service #which url the request will be mapped to
+      stripPrefix: false #if zuul should replace the "/uaa/" segment
+      sensitiveHeaders:
+
+    account-service:
+      path: /accounts/**
+      serviceId: account-service
+      stripPrefix: false
+      sensitiveHeaders:
+
+    employee-search-service:
+      path: /employee/**
+      serviceId: employee-search-service
+      stripPrefix: false
+      sensitiveHeaders:

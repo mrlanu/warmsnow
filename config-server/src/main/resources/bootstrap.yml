@@ -30,6 +30,15 @@ spring:
 server:
   port: 10000
 
+eureka:
+  instance:
+    instance-id: ${spring.application.name}:${spring.application.instance-id:${random.value}}
+  client:
+    region: default
+    registryFetchIntervalSeconds: 3
+    serviceUrl:
+      defaultZone: http://localhost:8001/eureka/
+
 management:
   endpoints:
     web:
