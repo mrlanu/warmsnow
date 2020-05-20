@@ -1,1 +1,38 @@
+spring:
+  application:
+    name: config-server
+  #  cloud:
+  #    config:
+  #      server:
+  #        git:
+  #          uri: https://github.com/mrlanu/warmsnow-config
+  #          username: mrlanu
+  #          password: Ao241212
+  #          clone-on-start: true
+  cloud:
+    config:
+      server:
+        native:
+          search-locations: classpath:/shared #tells spring where to locate the config files
+      override-system-properties: false
+      override-none: true
+  profiles:
+    active: native #we are using native because the config server uses a git repo by default
+  security:
+    user:
+    password: 12345 #the password which apps will use to access its configurations
+#  rabbitmq:
+#    host: localhost
+#    port: 5672
+#    username: guest
+#    password: guest
+
+server:
+  port: 10000
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: bus-refresh
 
