@@ -10,7 +10,7 @@ spring:
       password: mrlanu
       database: warmsnow
   application:
-    name: villages-service
+    name: building-factory-service
 
 eureka:
   instance:
@@ -18,5 +18,5 @@ eureka:
 
 server:
   servlet:
-    context-path: /villages
+    context-path: /building-factory
   port: ${PORT:0}
