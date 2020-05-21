@@ -18,5 +18,5 @@ eureka:
 
 server:
   servlet:
-    context-path: /building-factory
+    context-path: /buildings
   port: ${PORT:0}

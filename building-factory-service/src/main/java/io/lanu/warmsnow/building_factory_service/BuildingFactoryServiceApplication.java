@@ -39,9 +39,9 @@ public class BuildingFactoryServiceApplication {
                 produces.put(8, 84);
                 produces.put(24, 169);
                 constCost.put("coins", 96);
-                BuildingEntity hunter = new BuildingEntity("hunter", null,
+                BuildingEntity hunter = new BuildingEntity(null,
                         "hunter", 28, constCost, 10000, produces);
-                BuildingEntity blacksmith = new BuildingEntity("blacksmith", null,
+                BuildingEntity blacksmith = new BuildingEntity(null,
                         "blacksmith", 12, constCost, 30000, produces);
                 buildingsService.save(hunter);
                 buildingsService.save(blacksmith);

@@ -7,6 +7,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 @RestController
 public class BuildingsController {
 
@@ -14,6 +16,11 @@ public class BuildingsController {
 
     public BuildingsController(BuildingsService buildingsService) {
         this.buildingsService = buildingsService;
+    }
+
+    @GetMapping
+    public List<BuildingEntity> getAll(){
+        return buildingsService.findAll();
     }
 
     @GetMapping("/{buildingId}")

@@ -20,10 +20,9 @@ public class BuildingEntity {
     private long constructionTime;
     private Map<Integer, Integer> produces;
 
-    public BuildingEntity(String buildingId, String villageId, String type, Integer requiresPopulation,
+    public BuildingEntity(String villageId, String type, Integer requiresPopulation,
                           Map<String, Integer> constructionCost, long constructionTime,
                           Map<Integer, Integer> produces) {
-        this.buildingId = buildingId;
         this.villageId = villageId;
         this.type = type;
         this.requiresPopulation = requiresPopulation;

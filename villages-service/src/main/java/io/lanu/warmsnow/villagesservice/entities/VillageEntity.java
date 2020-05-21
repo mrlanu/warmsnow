@@ -23,7 +23,6 @@ public class VillageEntity {
 
     @PersistenceConstructor
     public VillageEntity(String accountId) {
-        this.villageId = UUID.randomUUID().toString();
         this.accountId = accountId;
         this.name = "New village";
         this.productionBuildings = new ArrayList<>();

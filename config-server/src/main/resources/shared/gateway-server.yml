@@ -26,7 +26,7 @@ zuul:
       sensitiveHeaders:
 
     account-service:
-      path: /building-factory/**
+      path: /buildings/**
       serviceId: building-factory-service
       stripPrefix: false
       sensitiveHeaders:
