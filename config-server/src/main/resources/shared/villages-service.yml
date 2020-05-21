@@ -20,3 +20,7 @@ server:
   servlet:
     context-path: /villages
   port: ${PORT:0}
+
+feign:
+  hystrix:
+    enabled: true
