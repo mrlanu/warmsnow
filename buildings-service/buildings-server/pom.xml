@@ -4,16 +4,13 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
+        <artifactId>buildings-service</artifactId>
         <groupId>io.lanu.warmsnow</groupId>
-        <artifactId>parent-module</artifactId>
         <version>0.0.1-SNAPSHOT</version>
     </parent>
 
-    <groupId>io.lanu.warmsnow.building-factory-service</groupId>
+    <groupId>io.lanu.warmsnow.buildings-service</groupId>
     <artifactId>building-factory-service</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
-    <name>building-factory-service</name>
-    <description>Building factory service</description>
 
     <dependencies>
         <dependency>
@@ -39,10 +36,11 @@
             <scope>runtime</scope>
             <optional>true</optional>
         </dependency>
+
         <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
-            <optional>true</optional>
+            <groupId>io.lanu.warmsnow.buildings-service</groupId>
+            <artifactId>buildings-client</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
         </dependency>
 
     </dependencies>
