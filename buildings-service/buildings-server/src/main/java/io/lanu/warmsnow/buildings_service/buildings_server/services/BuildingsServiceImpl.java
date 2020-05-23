@@ -1,12 +1,15 @@
-package io.lanu.warmsnow.building_factory_service.services;
+package io.lanu.warmsnow.buildings_service.buildings_server.services;
 
-import io.lanu.warmsnow.building_factory_service.entities.BuildingEntity;
-import io.lanu.warmsnow.building_factory_service.repositories.BuildingsRepository;
+import io.lanu.warmsnow.buildings_service.buildings_client.dto.BuildingDto;
+import io.lanu.warmsnow.buildings_service.buildings_server.entities.BuildingEntity;
+import io.lanu.warmsnow.buildings_service.buildings_server.repositories.BuildingsRepository;
 import lombok.extern.slf4j.Slf4j;
+import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -29,7 +32,11 @@ public class BuildingsServiceImpl implements BuildingsService {
     }
 
     @Override
-    public List<BuildingEntity> findAll() {
-        return buildingsRepository.findAll();
+    public List<BuildingDto> findAll() {
+        final ModelMapper mapper = new ModelMapper();
+        return buildingsRepository.findAll()
+                .stream()
+                .map(buildingEntity -> mapper.map(buildingEntity, BuildingDto.class))
+                .collect(Collectors.toList());
     }
 }

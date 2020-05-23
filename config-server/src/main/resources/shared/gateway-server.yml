@@ -27,7 +27,7 @@ zuul:
 
     account-service:
       path: /buildings/**
-      serviceId: building-factory-service
+      serviceId: buildings-server
       stripPrefix: false
       sensitiveHeaders:
 

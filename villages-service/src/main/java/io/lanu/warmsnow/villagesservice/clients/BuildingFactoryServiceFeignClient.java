@@ -10,5 +10,5 @@ import org.springframework.web.bind.annotation.PathVariable;
 public interface BuildingFactoryServiceFeignClient {
 
     @GetMapping(value = "/building-factory/{buildingId}")
-    BuildingEntity getBuilding(@PathVariable String buildingId);
+    BuildingEntity getBuilding(@PathVariable("buildingId") String buildingId);
 }

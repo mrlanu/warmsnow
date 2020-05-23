@@ -31,7 +31,7 @@
         <module>config-server</module>
         <module>gateway-server</module>
         <module>villages-service</module>
-        <module>building-factory-service</module>
+        <module>buildings-service</module>
     </modules>
 
     <dependencyManagement>

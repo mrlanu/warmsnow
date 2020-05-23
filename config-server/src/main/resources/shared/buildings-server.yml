@@ -10,7 +10,7 @@ spring:
       password: mrlanu
       database: warmsnow
   application:
-    name: building-factory-service
+    name: buildings-server
 
 eureka:
   instance:

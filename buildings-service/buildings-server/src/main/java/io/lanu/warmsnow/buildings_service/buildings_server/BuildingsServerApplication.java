@@ -1,8 +1,7 @@
-package io.lanu.warmsnow.building_factory_service;
+package io.lanu.warmsnow.buildings_service.buildings_server;
 
-import io.lanu.warmsnow.building_factory_service.entities.BuildingEntity;
-import io.lanu.warmsnow.building_factory_service.repositories.BuildingsRepository;
-import io.lanu.warmsnow.building_factory_service.services.BuildingsService;
+import io.lanu.warmsnow.buildings_service.buildings_server.entities.BuildingEntity;
+import io.lanu.warmsnow.buildings_service.buildings_server.services.BuildingsService;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -14,16 +13,16 @@ import java.util.Map;
 
 @SpringBootApplication
 @EnableDiscoveryClient
-public class BuildingFactoryServiceApplication {
+public class BuildingsServerApplication {
 
     private BuildingsService buildingsService;
 
-    public BuildingFactoryServiceApplication(BuildingsService buildingsService) {
+    public BuildingsServerApplication(BuildingsService buildingsService) {
         this.buildingsService = buildingsService;
     }
 
     public static void main(String[] args) {
-        SpringApplication.run(BuildingFactoryServiceApplication.class, args);
+        SpringApplication.run(BuildingsServerApplication.class, args);
     }
 
     @Bean
