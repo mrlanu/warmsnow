@@ -1,5 +1,6 @@
 package io.lanu.warmsnow.villagesservice.services;
 
+import io.lanu.warmsnow.buildings_service.buildings_client.dto.BuildingDto;
 import io.lanu.warmsnow.villagesservice.entities.BuildingEntity;
 import io.lanu.warmsnow.villagesservice.entities.VillageEntity;
 
@@ -11,4 +12,6 @@ public interface VillageService {
     VillageEntity findById(String id);
     VillageEntity save(VillageEntity villageEntity);
     VillageEntity createBuilding(BuildingEntity buildingEntity);
+    List<BuildingDto> getAvailableBuildings();
+    BuildingDto getBuildingById(String buildingId);
 }

@@ -1,6 +1,7 @@
 package io.lanu.warmsnow.villagesservice.services;
 
-import io.lanu.warmsnow.villagesservice.clients.BuildingFactoryServiceFeignClient;
+import io.lanu.warmsnow.buildings_service.buildings_client.dto.BuildingDto;
+import io.lanu.warmsnow.villagesservice.clients.BuildingsServiceFeignClient;
 import io.lanu.warmsnow.villagesservice.entities.BuildingEntity;
 import io.lanu.warmsnow.villagesservice.entities.VillageEntity;
 import io.lanu.warmsnow.villagesservice.repositories.VillageRepository;
@@ -14,12 +15,12 @@ import java.util.List;
 public class VillageServiceImpl implements VillageService {
 
     private VillageRepository villageRepository;
-    private BuildingFactoryServiceFeignClient buildingFactoryServiceFeignClient;
+    private BuildingsServiceFeignClient buildingsClient;
 
     public VillageServiceImpl(VillageRepository villageRepository,
-                              BuildingFactoryServiceFeignClient buildingFactoryServiceFeignClient) {
+                              BuildingsServiceFeignClient buildingsClient) {
         this.villageRepository = villageRepository;
-        this.buildingFactoryServiceFeignClient = buildingFactoryServiceFeignClient;
+        this.buildingsClient = buildingsClient;
     }
 
     @Override
@@ -48,5 +49,15 @@ public class VillageServiceImpl implements VillageService {
         VillageEntity village = findById(buildingEntity.getVillageId());
         village.addBuilding(buildingEntity);
         return save(village);
+    }
+
+    @Override
+    public List<BuildingDto> getAvailableBuildings() {
+        return buildingsClient.getAvailableBuildings();
+    }
+
+    @Override
+    public BuildingDto getBuildingById(String buildingId) {
+        return buildingsClient.getBuilding(buildingId);
     }
 }

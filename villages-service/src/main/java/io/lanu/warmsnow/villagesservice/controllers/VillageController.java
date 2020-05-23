@@ -1,5 +1,6 @@
 package io.lanu.warmsnow.villagesservice.controllers;
 
+import io.lanu.warmsnow.buildings_service.buildings_client.dto.BuildingDto;
 import io.lanu.warmsnow.villagesservice.entities.BuildingEntity;
 import io.lanu.warmsnow.villagesservice.entities.VillageEntity;
 import io.lanu.warmsnow.villagesservice.services.VillageService;
@@ -29,5 +30,15 @@ public class VillageController {
     @PostMapping("/buildings/create")
     public VillageEntity createBuilding(@RequestBody BuildingEntity buildingEntity){
         return villageService.createBuilding(buildingEntity);
+    }
+
+    @GetMapping("/buildings")
+    public List<BuildingDto> getAvailableBuildings(){
+        return villageService.getAvailableBuildings();
+    }
+
+    @GetMapping("/buildings/{buildingId}")
+    public BuildingDto getBuildingById(@PathVariable String buildingId){
+        return villageService.getBuildingById(buildingId);
     }
 }
