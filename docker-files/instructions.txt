@@ -1,0 +1,7 @@
+For to be able push the images to DockerHub
+file settings.xml should be moved to ~/.m2 directory,
+ and add the Docker Hub credentials.
+ Just need to replace username, password, and email.
+
+ For rebuild Docker image 'mvn install' on the certain module.
+ For push - 'mvn dockerfile:push' on the certain module.

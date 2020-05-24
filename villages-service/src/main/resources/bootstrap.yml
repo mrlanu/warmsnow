@@ -2,14 +2,16 @@ spring:
   cloud:
     config:
       name: villages-service
-      discovery:
-        service-id: config-server
-        enabled: true
+#      discovery:
+#        service-id: config-server
+#        enabled: true
+#      fail-fast: true
+      uri: http://localhost:10000 #should be uncommented if working with Docker
       fail-fast: true
       password: 12345
       username: user
   main:
-    allow-bean-definition-overriding: true #i dont remember why but i think there is a bug with spring cloud and OAuth2ClientContext
+    allow-bean-definition-overriding: true #there is a bug with spring cloud and OAuth2ClientContext
 
 eureka:
   client:

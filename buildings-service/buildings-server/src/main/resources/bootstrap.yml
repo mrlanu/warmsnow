@@ -2,10 +2,11 @@ spring:
   cloud:
     config:
       name: buildings-server
-      discovery:
-        service-id: config-server
-        enabled: true
-      fail-fast: true
+#      discovery:
+#        service-id: config-server
+#        enabled: true
+#      fail-fast: true
+      uri: http://localhost:10000 #should be uncommented if working with Docker
       password: 12345
       username: user
   main:
