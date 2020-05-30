@@ -1,11 +1,13 @@
 package io.lanu.warmsnow.villagesservice.services;
 
 import io.lanu.warmsnow.buildings_service.buildings_client.dto.BuildingDto;
+import io.lanu.warmsnow.buildings_service.buildings_client.dto.WarehouseDto;
 import io.lanu.warmsnow.villagesservice.clients.BuildingsServiceFeignClient;
-import io.lanu.warmsnow.villagesservice.entities.BuildingEntity;
 import io.lanu.warmsnow.villagesservice.entities.VillageEntity;
+import io.lanu.warmsnow.villagesservice.models.BuildingModel;
 import io.lanu.warmsnow.villagesservice.repositories.VillageRepository;
 import lombok.extern.slf4j.Slf4j;
+import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -16,6 +18,7 @@ public class VillageServiceImpl implements VillageService {
 
     private VillageRepository villageRepository;
     private BuildingsServiceFeignClient buildingsClient;
+    private final ModelMapper MAPPER = new ModelMapper();
 
     public VillageServiceImpl(VillageRepository villageRepository,
                               BuildingsServiceFeignClient buildingsClient) {
@@ -45,15 +48,18 @@ public class VillageServiceImpl implements VillageService {
     }
 
     @Override
-    public VillageEntity createBuilding(BuildingEntity buildingEntity) {
-        VillageEntity village = findById(buildingEntity.getVillageId());
-        village.addBuilding(buildingEntity);
+    public VillageEntity addNewBuilding(BuildingDto buildingDto) {
+        VillageEntity village = findById(buildingDto.getVillageId());
+        BuildingModel buildingModel = MAPPER.map(buildingDto, BuildingModel.class);
+        village.addBuilding(buildingModel);
         return save(village);
     }
 
     @Override
-    public List<BuildingDto> getAvailableBuildings() {
-        return buildingsClient.getAvailableBuildings();
+    public List<BuildingDto> getAvailableBuildings(String villageId) {
+        VillageEntity villageEntity = findById(villageId);
+        WarehouseDto warehouseDto = MAPPER.map(villageEntity.getWarehouse(), WarehouseDto.class);
+        return buildingsClient.getAvailableBuildings(warehouseDto);
     }
 
     @Override

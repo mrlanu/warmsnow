@@ -13,5 +13,5 @@ public class BuildingDto {
     private Map<String, Integer> constructionCost;
     private long constructionTime;
     private Map<Integer, Integer> produces;
-    private String testField;
+    private boolean available;
 }

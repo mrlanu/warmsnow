@@ -2,11 +2,10 @@ package io.lanu.warmsnow.buildings_service.buildings_server.controllers;
 
 
 import io.lanu.warmsnow.buildings_service.buildings_client.dto.BuildingDto;
+import io.lanu.warmsnow.buildings_service.buildings_client.dto.WarehouseDto;
 import io.lanu.warmsnow.buildings_service.buildings_server.entities.BuildingEntity;
 import io.lanu.warmsnow.buildings_service.buildings_server.services.BuildingsService;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -19,9 +18,9 @@ public class BuildingsController {
         this.buildingsService = buildingsService;
     }
 
-    @GetMapping
-    public List<BuildingDto> getAll(){
-        return buildingsService.findAll();
+    @PostMapping
+    public List<BuildingDto> getAllAvailable(@RequestBody WarehouseDto warehouseDto){
+        return buildingsService.getAllAvailable(warehouseDto);
     }
 
     @GetMapping("/{buildingId}")

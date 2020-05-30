@@ -1,17 +1,13 @@
-package io.lanu.warmsnow.villagesservice.entities;
+package io.lanu.warmsnow.villagesservice.models;
 
 import lombok.Data;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.annotation.TypeAlias;
-import org.springframework.data.mongodb.core.mapping.Document;
+import lombok.NoArgsConstructor;
 
 import java.util.Map;
 
-@Document("prod-buildings")
-@TypeAlias("prod-building")
 @Data
-public class BuildingEntity {
-    @Id
+@NoArgsConstructor
+public class BuildingModel {
     private String buildingId;
     private String villageId;
     private String type;
@@ -20,9 +16,9 @@ public class BuildingEntity {
     private long constructionTime;
     private Map<Integer, Integer> produces;
 
-    public BuildingEntity(String villageId, String type, Integer requiresPopulation,
-                          Map<String, Integer> constructionCost, long constructionTime,
-                          Map<Integer, Integer> produces) {
+    public BuildingModel(String villageId, String type, Integer requiresPopulation,
+                         Map<String, Integer> constructionCost, long constructionTime,
+                         Map<Integer, Integer> produces) {
         this.villageId = villageId;
         this.type = type;
         this.requiresPopulation = requiresPopulation;
