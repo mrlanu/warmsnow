@@ -13,16 +13,16 @@ import java.util.Map;
 
 @SpringBootApplication
 @EnableDiscoveryClient
-public class BuildingsServerApplication {
+public class TemplatesServerApplication {
 
     private BuildingsService buildingsService;
 
-    public BuildingsServerApplication(BuildingsService buildingsService) {
+    public TemplatesServerApplication(BuildingsService buildingsService) {
         this.buildingsService = buildingsService;
     }
 
     public static void main(String[] args) {
-        SpringApplication.run(BuildingsServerApplication.class, args);
+        SpringApplication.run(TemplatesServerApplication.class, args);
     }
 
     @Bean

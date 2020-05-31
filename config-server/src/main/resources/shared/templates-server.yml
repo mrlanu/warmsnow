@@ -10,7 +10,7 @@ spring:
       password: mrlanu
       database: warmsnow
   application:
-    name: buildings-server
+    name: templates-server
 
 eureka:
   instance:
@@ -18,5 +18,5 @@ eureka:
 
 server:
   servlet:
-    context-path: /buildings
+    context-path: /templates
   port: ${PORT:0}

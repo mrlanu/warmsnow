@@ -4,13 +4,13 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <artifactId>buildings-service</artifactId>
+        <artifactId>templates</artifactId>
         <groupId>io.lanu.warmsnow</groupId>
         <version>0.0.1-SNAPSHOT</version>
     </parent>
 
-    <groupId>io.lanu.warmsnow.buildings-service</groupId>
-    <artifactId>buildings-server</artifactId>
+    <groupId>io.lanu.warmsnow.templates</groupId>
+    <artifactId>templates-server</artifactId>
 
     <dependencies>
         <dependency>
@@ -38,8 +38,8 @@
         </dependency>
 
         <dependency>
-            <groupId>io.lanu.warmsnow.buildings-service</groupId>
-            <artifactId>buildings-client</artifactId>
+            <groupId>io.lanu.warmsnow.templates</groupId>
+            <artifactId>templates-client</artifactId>
             <version>0.0.1-SNAPSHOT</version>
         </dependency>
 

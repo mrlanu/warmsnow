@@ -1,7 +1,7 @@
 spring:
   cloud:
     config:
-      name: buildings-server
+      name: templates-server
 #      discovery:
 #        service-id: config-server
 #        enabled: true

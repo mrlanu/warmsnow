@@ -11,12 +11,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.List;
 
-@FeignClient(name = "buildings-server")
+@FeignClient(name = "templates-server")
 public interface BuildingsServiceFeignClient {
 
-    @GetMapping(value = "/buildings/{buildingId}")
+    @GetMapping(value = "/templates/buildings/{buildingId}")
     BuildingDto getBuilding(@PathVariable("buildingId") String buildingId);
 
-    @PostMapping(value = "/buildings/", consumes = "application/json")
+    @PostMapping(value = "/templates/buildings/", consumes = "application/json")
     List<BuildingDto> getAvailableBuildings(@RequestBody WarehouseDto warehouse);
 }
