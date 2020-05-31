@@ -1,7 +1,6 @@
 package io.lanu.warmsnow.villagesservice.services;
 
-import io.lanu.warmsnow.buildings_service.buildings_client.dto.BuildingDto;
-import io.lanu.warmsnow.villagesservice.models.BuildingModel;
+import io.lanu.warmsnow.templates.templates_client.dto.BuildingDto;
 import io.lanu.warmsnow.villagesservice.entities.VillageEntity;
 
 import java.util.List;

@@ -1,9 +1,9 @@
-package io.lanu.warmsnow.buildings_service.buildings_server.services;
+package io.lanu.warmsnow.templates.templates_server.services;
 
-import io.lanu.warmsnow.buildings_service.buildings_client.dto.BuildingDto;
-import io.lanu.warmsnow.buildings_service.buildings_client.dto.WarehouseDto;
-import io.lanu.warmsnow.buildings_service.buildings_server.entities.BuildingEntity;
-import io.lanu.warmsnow.buildings_service.buildings_server.repositories.BuildingsRepository;
+import io.lanu.warmsnow.templates.templates_client.dto.BuildingDto;
+import io.lanu.warmsnow.templates.templates_client.dto.WarehouseDto;
+import io.lanu.warmsnow.templates.templates_server.entities.BuildingEntity;
+import io.lanu.warmsnow.templates.templates_server.repositories.BuildingsRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
@@ -53,10 +53,11 @@ public class BuildingsServiceImpl implements BuildingsService {
     }
 
     private boolean isAvailable(BuildingEntity buildingEntity, WarehouseDto warehouseDto){
-        boolean coins = buildingEntity.getConstructionCost()
+        /*boolean coins = buildingEntity.getConstructionCost()
                 .getOrDefault("coins", 0) <= warehouseDto.getCoins();
         boolean foods = buildingEntity.getConstructionCost()
                 .getOrDefault("foods", 0) <= warehouseDto.getFoods();
-        return coins && foods;
+        return coins && foods;*/
+        return false;
     }
 }

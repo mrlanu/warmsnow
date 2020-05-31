@@ -1,4 +1,4 @@
-package io.lanu.warmsnow.buildings_service.buildings_server.entities;
+package io.lanu.warmsnow.templates.templates_server.entities;
 
 import lombok.Data;
 import org.springframework.data.annotation.Id;

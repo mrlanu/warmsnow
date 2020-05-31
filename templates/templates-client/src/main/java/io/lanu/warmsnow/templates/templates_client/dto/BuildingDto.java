@@ -1,4 +1,4 @@
-package io.lanu.warmsnow.buildings_service.buildings_client.dto;
+package io.lanu.warmsnow.templates.templates_client.dto;
 
 import lombok.Data;
 

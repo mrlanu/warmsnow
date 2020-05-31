@@ -1,10 +1,10 @@
-package io.lanu.warmsnow.buildings_service.buildings_server.controllers;
+package io.lanu.warmsnow.templates.templates_server.controllers;
 
 
-import io.lanu.warmsnow.buildings_service.buildings_client.dto.BuildingDto;
-import io.lanu.warmsnow.buildings_service.buildings_client.dto.WarehouseDto;
-import io.lanu.warmsnow.buildings_service.buildings_server.entities.BuildingEntity;
-import io.lanu.warmsnow.buildings_service.buildings_server.services.BuildingsService;
+import io.lanu.warmsnow.templates.templates_client.dto.BuildingDto;
+import io.lanu.warmsnow.templates.templates_client.dto.WarehouseDto;
+import io.lanu.warmsnow.templates.templates_server.entities.BuildingEntity;
+import io.lanu.warmsnow.templates.templates_server.services.BuildingsService;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;

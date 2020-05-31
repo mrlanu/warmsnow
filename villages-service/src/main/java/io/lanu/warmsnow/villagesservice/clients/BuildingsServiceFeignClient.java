@@ -1,8 +1,8 @@
 package io.lanu.warmsnow.villagesservice.clients;
 
 
-import io.lanu.warmsnow.buildings_service.buildings_client.dto.BuildingDto;
-import io.lanu.warmsnow.buildings_service.buildings_client.dto.WarehouseDto;
+import io.lanu.warmsnow.templates.templates_client.dto.BuildingDto;
+import io.lanu.warmsnow.templates.templates_client.dto.WarehouseDto;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
