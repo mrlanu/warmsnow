@@ -15,10 +15,9 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 import org.springframework.context.annotation.Bean;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.util.*;
 
 @SpringBootApplication
 @EnableDiscoveryClient
@@ -39,8 +38,8 @@ public class TemplatesServerApplication {
         SpringApplication.run(TemplatesServerApplication.class, args);
     }
 
-    @Bean
-    public CommandLineRunner createSomeBuildings() {
+    /*@Bean
+    public CommandLineRunner createSomeBuildingsTemplates() {
         return args -> {
             if (buildingsService.findAll().size() == 0){
                 Map<Integer, Integer> produces = new HashMap<>();
@@ -60,25 +59,29 @@ public class TemplatesServerApplication {
                 buildingsService.save(blacksmith);
             }
         };
-    }
+    }*/
 
     @Bean
-    public CommandLineRunner createSomeFields() {
+    public CommandLineRunner createSomeFieldsTemplates() {
         return args -> {
             if (fieldsService.findAll().size() == 0){
                 List<FieldTemplateEntity> fields = Arrays.asList(
-                        new FieldTemplateEntity(0, 1, FieldType.CROP, 10),
-                        new FieldTemplateEntity(0, 1, FieldType.WOOD, 10),
-                        new FieldTemplateEntity(0, 1, FieldType.CLAY, 10),
-                        new FieldTemplateEntity(0, 1, FieldType.IRON, 10),
-                        new FieldTemplateEntity(0, 2, FieldType.CROP, 20),
-                        new FieldTemplateEntity(0, 2, FieldType.WOOD, 20),
-                        new FieldTemplateEntity(0, 2, FieldType.CLAY, 20),
-                        new FieldTemplateEntity(0, 2, FieldType.IRON, 20),
-                        new FieldTemplateEntity(0, 3, FieldType.CROP, 50),
-                        new FieldTemplateEntity(0, 3, FieldType.WOOD, 50),
-                        new FieldTemplateEntity(0, 3, FieldType.CLAY, 50),
-                        new FieldTemplateEntity(0, 3, FieldType.IRON, 50)
+                        new FieldTemplateEntity(0, 2, FieldType.WOOD, BigDecimal.valueOf(10),
+                                false, false, 1000, getResourcesToNextLevel(150)),
+                        new FieldTemplateEntity(0, 2, FieldType.CLAY, BigDecimal.valueOf(10),
+                                false, false, 1000, getResourcesToNextLevel(150)),
+                        new FieldTemplateEntity(0, 2, FieldType.IRON, BigDecimal.valueOf(10),
+                                false, false, 1000, getResourcesToNextLevel(150)),
+                        new FieldTemplateEntity(0, 2, FieldType.CROP, BigDecimal.valueOf(10),
+                                false, false, 1000, getResourcesToNextLevel(150)),
+                        new FieldTemplateEntity(0, 3, FieldType.WOOD, BigDecimal.valueOf(30),
+                                false, false, 1000, getResourcesToNextLevel(550)),
+                        new FieldTemplateEntity(0, 3, FieldType.CLAY, BigDecimal.valueOf(30),
+                                false, false, 1000, getResourcesToNextLevel(550)),
+                        new FieldTemplateEntity(0, 3, FieldType.IRON, BigDecimal.valueOf(30),
+                                false, false, 1000, getResourcesToNextLevel(550)),
+                        new FieldTemplateEntity(0, 3, FieldType.CROP, BigDecimal.valueOf(30),
+                                false, false, 1000, getResourcesToNextLevel(550))
                 );
                 fieldsService.saveAll(fields);
             }
@@ -86,18 +89,30 @@ public class TemplatesServerApplication {
     }
 
     @Bean
-    public CommandLineRunner createSomeVillages() {
+    public CommandLineRunner createSomeVillagesTemplates() {
         return args -> {
             if (villagesService.findAll().size() == 0){
                 List<Field> fields = Arrays.asList(
-                        new Field(0, 1, FieldType.CROP, 10),
-                        new Field(1, 1, FieldType.WOOD, 10),
-                        new Field(2, 1, FieldType.CLAY, 10),
-                        new Field(3, 1, FieldType.IRON, 10)
+                        new Field(0, 1, FieldType.WOOD, BigDecimal.valueOf(10),
+                                false, false, 30000, getResourcesToNextLevel(50)),
+                        new Field(0, 1, FieldType.CLAY, BigDecimal.valueOf(10),
+                                false, false, 30000, getResourcesToNextLevel(50)),
+                        new Field(0, 1, FieldType.IRON, BigDecimal.valueOf(10),
+                                false, false, 30000, getResourcesToNextLevel(50)),
+                        new Field(0, 1, FieldType.CROP, BigDecimal.valueOf(10),
+                                false, false, 30000, getResourcesToNextLevel(50))
                 );
                 villagesService.save(new VillageTemplateEntity(null, VillageType.SIX, fields));
             }
         };
+    }
+
+    private Map<String, BigDecimal> getResourcesToNextLevel(int resourceAmount){
+        return  Map.of(
+                "wood", BigDecimal.valueOf(resourceAmount),
+                "clay", BigDecimal.valueOf(resourceAmount),
+                "iron", BigDecimal.valueOf(resourceAmount),
+                "crop", BigDecimal.valueOf(resourceAmount));
     }
 
 

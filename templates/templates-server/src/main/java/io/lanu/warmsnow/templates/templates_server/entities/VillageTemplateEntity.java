@@ -17,6 +17,10 @@ import java.util.List;
 public class VillageTemplateEntity {
     private String villageId;
     private String accountId;
+    private Integer x;
+    private Integer y;
+    private Integer culture;
+    private Integer population;
     private VillageType villageType;
     private Warehouse warehouse;
     private List<Field> fields;
