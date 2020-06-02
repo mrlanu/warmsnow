@@ -75,7 +75,7 @@ public class TemplatesServerApplication {
                         new FieldTemplateEntity(0, 2, FieldType.CROP, BigDecimal.valueOf(10),
                                 false, false, 1000, getResourcesToNextLevel(150)),
                         new FieldTemplateEntity(0, 3, FieldType.WOOD, BigDecimal.valueOf(30),
-                                false, false, 1000, getResourcesToNextLevel(550)),
+                                false, false, 1000, getResourcesToNextLevel(950)),
                         new FieldTemplateEntity(0, 3, FieldType.CLAY, BigDecimal.valueOf(30),
                                 false, false, 1000, getResourcesToNextLevel(550)),
                         new FieldTemplateEntity(0, 3, FieldType.IRON, BigDecimal.valueOf(30),
@@ -95,11 +95,11 @@ public class TemplatesServerApplication {
                 List<Field> fields = Arrays.asList(
                         new Field(0, 1, FieldType.WOOD, BigDecimal.valueOf(10),
                                 false, false, 30000, getResourcesToNextLevel(50)),
-                        new Field(0, 1, FieldType.CLAY, BigDecimal.valueOf(10),
+                        new Field(1, 1, FieldType.CLAY, BigDecimal.valueOf(10),
                                 false, false, 30000, getResourcesToNextLevel(50)),
-                        new Field(0, 1, FieldType.IRON, BigDecimal.valueOf(10),
+                        new Field(2, 1, FieldType.IRON, BigDecimal.valueOf(10),
                                 false, false, 30000, getResourcesToNextLevel(50)),
-                        new Field(0, 1, FieldType.CROP, BigDecimal.valueOf(10),
+                        new Field(3, 1, FieldType.CROP, BigDecimal.valueOf(10),
                                 false, false, 30000, getResourcesToNextLevel(50))
                 );
                 villagesService.save(new VillageTemplateEntity(VillageType.SIX, fields));

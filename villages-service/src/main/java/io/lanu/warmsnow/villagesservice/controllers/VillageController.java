@@ -32,4 +32,9 @@ public class VillageController {
     public VillageDto newVillage(@RequestBody NewVillageRequest newVillageRequest){
         return villageService.createVillage(newVillageRequest);
     }
+
+    @PutMapping("/{villageId}/fields/{fieldPosition}")
+    public VillageDto upgradeField(@PathVariable String villageId, @PathVariable int fieldPosition){
+        return villageService.upgradeField(villageId, fieldPosition);
+    }
 }

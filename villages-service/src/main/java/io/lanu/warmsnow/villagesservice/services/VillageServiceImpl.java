@@ -1,6 +1,8 @@
 package io.lanu.warmsnow.villagesservice.services;
 
+import io.lanu.warmsnow.templates.templates_client.dto.FieldDto;
 import io.lanu.warmsnow.templates.templates_client.dto.VillageDto;
+import io.lanu.warmsnow.templates.templates_client.models.Field;
 import io.lanu.warmsnow.villagesservice.clients.TemplatesServiceFeignClient;
 import io.lanu.warmsnow.villagesservice.entities.VillageEntity;
 import io.lanu.warmsnow.villagesservice.models.NewVillageRequest;
@@ -81,4 +83,28 @@ public class VillageServiceImpl implements VillageService {
         return wood > 0 && clay > 0 && iron > 0 && crop > 0;
     }
 
+    @Override
+    public VillageDto upgradeField(String villageId, int fieldPosition) {
+        // get the village for upgrade
+        VillageEntity villageEntity = villageRepository.findById(villageId).orElseThrow();
+        // find a field for upgrade in that village
+        Field field = villageEntity.getFields()
+                .stream()
+                .filter(f -> f.getPosition() == fieldPosition)
+                .findFirst()
+                .orElseThrow();
+        // get new field from Templates service
+        FieldDto upgradedFieldTemplate = templatesFeignClient
+                .getFieldByLevelAndType(field.getLevel() + 1, field.getFieldType());
+        upgradedFieldTemplate.setPosition(field.getPosition());
+        Field upgradedField = MAPPER.map(upgradedFieldTemplate, Field.class);
+        // set new field to the village
+        villageEntity.getFields().set(upgradedField.getPosition(), upgradedField);
+        // save upgraded village
+        villageEntity = save(villageEntity);
+        // check fields available for upgrade
+        checkFieldsUpgradable(villageEntity);
+        // return mapped village to DTO
+        return MAPPER.map(villageEntity, VillageDto.class);
+    }
 }

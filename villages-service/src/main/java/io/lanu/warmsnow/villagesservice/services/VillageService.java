@@ -11,4 +11,6 @@ public interface VillageService {
     List<VillageEntity> findAll();
     VillageDto findById(String id);
     VillageEntity save(VillageEntity villageEntity);
+
+    VillageDto upgradeField(String villageId, int fieldPosition);
 }

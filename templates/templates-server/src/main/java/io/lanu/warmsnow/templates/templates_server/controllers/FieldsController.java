@@ -18,7 +18,7 @@ public class FieldsController {
         this.fieldsService = fieldsService;
     }
 
-    @GetMapping("/get/{level}/{type}")
+    @GetMapping("/{level}/{type}")
     public FieldTemplateEntity getFieldByLevelAndType(@PathVariable Integer level, @PathVariable FieldType type){
         return fieldsService.findByLevelAndFieldType(level, type);
     }

@@ -1,6 +1,8 @@
 package io.lanu.warmsnow.villagesservice.clients;
 
 
+import io.lanu.warmsnow.templates.templates_client.dto.FieldDto;
+import io.lanu.warmsnow.templates.templates_client.dto.FieldType;
 import io.lanu.warmsnow.templates.templates_client.dto.VillageDto;
 import io.lanu.warmsnow.templates.templates_client.dto.VillageType;
 import org.springframework.cloud.openfeign.FeignClient;
@@ -12,6 +14,10 @@ public interface TemplatesServiceFeignClient {
 
     @GetMapping(value = "/templates/villages/{villageType}")
     VillageDto getVillageByType(@PathVariable("villageType") VillageType villageType);
+
+    @GetMapping(value = "/templates/fields/{fieldLevel}/{fieldType}")
+    FieldDto getFieldByLevelAndType(@PathVariable("fieldLevel") int fieldLevel,
+                                    @PathVariable("fieldType") FieldType fieldType);
 
     /*@GetMapping(value = "/templates/buildings/{buildingId}")
     BuildingDto getBuilding(@PathVariable("buildingId") String buildingId);
