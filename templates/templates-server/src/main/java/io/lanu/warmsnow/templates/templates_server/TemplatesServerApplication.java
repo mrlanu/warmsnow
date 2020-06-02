@@ -102,7 +102,7 @@ public class TemplatesServerApplication {
                         new Field(0, 1, FieldType.CROP, BigDecimal.valueOf(10),
                                 false, false, 30000, getResourcesToNextLevel(50))
                 );
-                villagesService.save(new VillageTemplateEntity(null, VillageType.SIX, fields));
+                villagesService.save(new VillageTemplateEntity(VillageType.SIX, fields));
             }
         };
     }

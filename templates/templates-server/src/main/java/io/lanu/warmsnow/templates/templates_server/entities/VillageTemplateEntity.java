@@ -27,10 +27,13 @@ public class VillageTemplateEntity {
     // private List<Building> buildings;
 
 
-    public VillageTemplateEntity(String accountId, VillageType villageType, List<Field> fields) {
-        this.accountId = accountId;
+    public VillageTemplateEntity(VillageType villageType, List<Field> fields) {
         this.villageType = villageType;
         this.warehouse = new Warehouse();
         this.fields = fields;
+        this.x = 0;
+        this.y = 0;
+        this.population = 10;
+        this.culture =100;
     }
 }
