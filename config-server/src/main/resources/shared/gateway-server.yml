@@ -30,3 +30,9 @@ zuul:
       serviceId: templates-server
       stripPrefix: false
       sensitiveHeaders:
+
+    tasks-service:
+      path: /tasks/**
+      serviceId: tasks-service
+      stripPrefix: false
+      sensitiveHeaders:

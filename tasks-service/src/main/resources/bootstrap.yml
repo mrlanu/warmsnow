@@ -1,0 +1,19 @@
+spring:
+  cloud:
+    config:
+      name: tasks-service
+      #      discovery:
+      #        service-id: config-server
+      #        enabled: true
+      #      fail-fast: true
+      uri: http://localhost:10000 #should be uncommented if working with Docker
+      fail-fast: true
+      password: 12345
+      username: user
+  main:
+    allow-bean-definition-overriding: true #there is a bug with spring cloud and OAuth2ClientContext
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8001/eureka/
