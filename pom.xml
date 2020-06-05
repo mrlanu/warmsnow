@@ -33,6 +33,7 @@
         <module>villages-service</module>
         <module>templates</module>
         <module>tasks-service</module>
+        <module>common-models</module>
     </modules>
 
     <dependencyManagement>

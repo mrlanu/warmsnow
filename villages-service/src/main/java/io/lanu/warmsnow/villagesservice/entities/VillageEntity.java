@@ -1,18 +1,14 @@
 package io.lanu.warmsnow.villagesservice.entities;
 
-import io.lanu.warmsnow.templates.templates_client.dto.VillageType;
+import io.lanu.warmsnow.common_models.VillageType;
 import io.lanu.warmsnow.templates.templates_client.models.Field;
 import io.lanu.warmsnow.templates.templates_client.models.Warehouse;
-import io.lanu.warmsnow.villagesservice.models.BuildingModel;
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
-import org.springframework.data.annotation.PersistenceConstructor;
 import org.springframework.data.annotation.TypeAlias;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Document("villages")

@@ -1,10 +1,10 @@
 package io.lanu.warmsnow.villagesservice.clients;
 
 
+import io.lanu.warmsnow.common_models.FieldType;
+import io.lanu.warmsnow.common_models.VillageType;
 import io.lanu.warmsnow.templates.templates_client.dto.FieldDto;
-import io.lanu.warmsnow.templates.templates_client.dto.FieldType;
 import io.lanu.warmsnow.templates.templates_client.dto.VillageDto;
-import io.lanu.warmsnow.templates.templates_client.dto.VillageType;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;

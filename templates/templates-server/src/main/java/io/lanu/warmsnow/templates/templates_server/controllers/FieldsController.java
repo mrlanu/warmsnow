@@ -1,6 +1,6 @@
 package io.lanu.warmsnow.templates.templates_server.controllers;
 
-import io.lanu.warmsnow.templates.templates_client.dto.FieldType;
+import io.lanu.warmsnow.common_models.FieldType;
 import io.lanu.warmsnow.templates.templates_server.entities.FieldTemplateEntity;
 import io.lanu.warmsnow.templates.templates_server.services.FieldsService;
 import org.springframework.web.bind.annotation.GetMapping;

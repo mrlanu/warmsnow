@@ -1,6 +1,6 @@
 package io.lanu.warmsnow.templates.templates_client.models;
 
-import io.lanu.warmsnow.templates.templates_client.dto.FieldType;
+import io.lanu.warmsnow.common_models.FieldType;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

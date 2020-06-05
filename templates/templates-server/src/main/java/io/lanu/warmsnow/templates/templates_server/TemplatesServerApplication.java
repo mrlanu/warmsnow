@@ -1,9 +1,8 @@
 package io.lanu.warmsnow.templates.templates_server;
 
+import io.lanu.warmsnow.common_models.FieldType;
+import io.lanu.warmsnow.common_models.VillageType;
 import io.lanu.warmsnow.templates.templates_client.models.Field;
-import io.lanu.warmsnow.templates.templates_client.dto.FieldType;
-import io.lanu.warmsnow.templates.templates_client.dto.VillageType;
-import io.lanu.warmsnow.templates.templates_server.entities.BuildingEntity;
 import io.lanu.warmsnow.templates.templates_server.entities.FieldTemplateEntity;
 import io.lanu.warmsnow.templates.templates_server.entities.VillageTemplateEntity;
 import io.lanu.warmsnow.templates.templates_server.services.BuildingsService;
@@ -16,7 +15,6 @@ import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 import org.springframework.context.annotation.Bean;
 
 import java.math.BigDecimal;
-import java.math.BigInteger;
 import java.util.*;
 
 @SpringBootApplication
