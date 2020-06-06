@@ -1,8 +1,8 @@
 package io.lanu.warmsnow.templates.templates_server.entities;
 
 import io.lanu.warmsnow.common_models.VillageType;
-import io.lanu.warmsnow.templates.templates_client.models.Field;
-import io.lanu.warmsnow.templates.templates_client.models.Warehouse;
+import io.lanu.warmsnow.common_models.models.Field;
+import io.lanu.warmsnow.common_models.models.Warehouse;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.TypeAlias;

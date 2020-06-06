@@ -1,8 +1,8 @@
 package io.lanu.warmsnow.villagesservice.entities;
 
 import io.lanu.warmsnow.common_models.VillageType;
-import io.lanu.warmsnow.templates.templates_client.models.Field;
-import io.lanu.warmsnow.templates.templates_client.models.Warehouse;
+import io.lanu.warmsnow.common_models.models.Field;
+import io.lanu.warmsnow.common_models.models.Warehouse;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
@@ -24,7 +24,7 @@ public class VillageEntity {
     private Integer culture;
     private Integer population;
     private VillageType villageType;
-    private io.lanu.warmsnow.templates.templates_client.models.Warehouse warehouse;
+    private Warehouse warehouse;
     private List<Field> fields;
 
     public VillageEntity(String accountId, Integer x, Integer y, Integer culture, Integer population,

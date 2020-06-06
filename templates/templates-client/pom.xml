@@ -12,4 +12,12 @@
     <groupId>io.lanu.warmsnow.templates</groupId>
     <artifactId>templates-client</artifactId>
 
+    <dependencies>
+        <dependency>
+            <groupId>io.lanu.warmsnow</groupId>
+            <artifactId>common-models</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
+    </dependencies>
+
 </project>

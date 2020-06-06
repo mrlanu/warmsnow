@@ -1,17 +1,22 @@
 package io.lanu.warmsnow.villagesservice.services;
 
+import io.lanu.warmsnow.common_models.models.Warehouse;
+import io.lanu.warmsnow.common_models.requests.FieldUpgradeRequest;
 import io.lanu.warmsnow.templates.templates_client.dto.FieldDto;
 import io.lanu.warmsnow.templates.templates_client.dto.VillageDto;
-import io.lanu.warmsnow.templates.templates_client.models.Field;
+import io.lanu.warmsnow.common_models.models.Field;
 import io.lanu.warmsnow.villagesservice.clients.TemplatesServiceFeignClient;
 import io.lanu.warmsnow.villagesservice.entities.VillageEntity;
-import io.lanu.warmsnow.villagesservice.models.NewVillageRequest;
+import io.lanu.warmsnow.common_models.requests.NewVillageRequest;
 import io.lanu.warmsnow.villagesservice.repositories.VillageRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
+import java.time.temporal.TemporalUnit;
 import java.util.List;
 import java.util.Map;
 
@@ -75,24 +80,40 @@ public class VillageServiceImpl implements VillageService {
     }
 
     private boolean compareResources(Map<String, BigDecimal> need, Map<String, BigDecimal> available){
-        int wood = available.get("wood").compareTo(need.get("wood"));
-        int clay = available.get("clay").compareTo(need.get("clay"));
-        int iron = available.get("iron").compareTo(need.get("iron"));
-        int crop = available.get("crop").compareTo(need.get("crop"));
-
-        return wood > 0 && clay > 0 && iron > 0 && crop > 0;
+        for (String key : need.keySet()){
+            if (available.get(key).compareTo(need.get(key)) < 0){
+                return false;
+            }
+        }
+        return true;
     }
 
     @Override
-    public VillageDto upgradeField(String villageId, int fieldPosition) {
+    public void upgradeFieldRequest(FieldUpgradeRequest request) {
         // get the village for upgrade
-        VillageEntity villageEntity = villageRepository.findById(villageId).orElseThrow();
-        // find a field for upgrade in that village
-        Field field = villageEntity.getFields()
-                .stream()
-                .filter(f -> f.getPosition() == fieldPosition)
-                .findFirst()
-                .orElseThrow();
+        VillageEntity villageEntity = villageRepository.findById(request.getVillageId()).orElseThrow();
+        // get the field for upgrade in that village
+        Field field = villageEntity.getFields().get(request.getPosition());
+        field.setUnderUpgrade(true);
+        field.setTimeUpgradeComplete(LocalDateTime.now().plus(field.getTimeToNextLevel(), ChronoUnit.MILLIS));
+        // subtract needed resources for upgrade the Field
+        Warehouse warehouse = villageEntity.getWarehouse();
+        subtractResourcesFromWarehouse(warehouse, field.getResourcesToNextLevel());
+        // save the village to DB
+        villageRepository.save(villageEntity);
+    }
+
+    private void subtractResourcesFromWarehouse(Warehouse warehouse, Map<String, BigDecimal> resourcesToNextLevel) {
+        warehouse.getGoods()
+                .forEach((k, v) -> warehouse.getGoods().put(k, warehouse.getGoods().get(k).subtract(resourcesToNextLevel.get(k))));
+    }
+
+    @Override
+    public VillageDto upgradeField(FieldUpgradeRequest request) {
+        // get the village for upgrade
+        VillageEntity villageEntity = villageRepository.findById(request.getVillageId()).orElseThrow();
+        // get the field for upgrade in that village
+        Field field = villageEntity.getFields().get(request.getPosition());
         // get new field from Templates service
         FieldDto upgradedFieldTemplate = templatesFeignClient
                 .getFieldByLevelAndType(field.getLevel() + 1, field.getFieldType());

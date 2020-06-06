@@ -1,4 +1,4 @@
-package io.lanu.warmsnow.templates.templates_client.models;
+package io.lanu.warmsnow.common_models.models;
 
 import io.lanu.warmsnow.common_models.FieldType;
 import lombok.AllArgsConstructor;
@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.Map;
 
 @Data
@@ -17,6 +18,7 @@ public class Field {
     private FieldType fieldType;
     private BigDecimal productivity;
     private boolean underUpgrade;
+    private LocalDateTime timeUpgradeComplete;
     private boolean ableToUpgrade;
     private long timeToNextLevel;
     private Map<String, BigDecimal> resourcesToNextLevel;

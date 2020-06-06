@@ -1,6 +1,6 @@
-package io.lanu.warmsnow.villagesservice.models;
+package io.lanu.warmsnow.common_models.requests;
 
-import io.lanu.warmsnow.templates.templates_client.dto.VillageType;
+import io.lanu.warmsnow.common_models.VillageType;
 import lombok.Data;
 
 @Data

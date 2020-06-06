@@ -1,7 +1,8 @@
 package io.lanu.warmsnow.templates.templates_client.dto;
 
-import io.lanu.warmsnow.templates.templates_client.models.Field;
-import io.lanu.warmsnow.templates.templates_client.models.Warehouse;
+import io.lanu.warmsnow.common_models.VillageType;
+import io.lanu.warmsnow.common_models.models.Field;
+import io.lanu.warmsnow.common_models.models.Warehouse;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

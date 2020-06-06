@@ -1,10 +1,10 @@
 package io.lanu.warmsnow.villagesservice.controllers;
 
+import io.lanu.warmsnow.common_models.requests.FieldUpgradeRequest;
 import io.lanu.warmsnow.templates.templates_client.dto.VillageDto;
 import io.lanu.warmsnow.villagesservice.entities.VillageEntity;
-import io.lanu.warmsnow.villagesservice.models.NewVillageRequest;
+import io.lanu.warmsnow.common_models.requests.NewVillageRequest;
 import io.lanu.warmsnow.villagesservice.services.VillageService;
-import org.modelmapper.ModelMapper;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -33,8 +33,8 @@ public class VillageController {
         return villageService.createVillage(newVillageRequest);
     }
 
-    @PutMapping("/{villageId}/fields/{fieldPosition}")
-    public VillageDto upgradeField(@PathVariable String villageId, @PathVariable int fieldPosition){
-        return villageService.upgradeField(villageId, fieldPosition);
+    @PutMapping("/fields/upgrade-request")
+    public void upgradeFieldRequest(@RequestBody FieldUpgradeRequest request){
+        villageService.upgradeFieldRequest(request);
     }
 }

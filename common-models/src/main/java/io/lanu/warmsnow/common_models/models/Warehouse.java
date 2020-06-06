@@ -1,4 +1,4 @@
-package io.lanu.warmsnow.templates.templates_client.models;
+package io.lanu.warmsnow.common_models.models;
 
 import lombok.Data;
 
