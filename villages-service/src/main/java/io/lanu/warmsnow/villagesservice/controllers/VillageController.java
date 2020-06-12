@@ -33,8 +33,14 @@ public class VillageController {
         return villageService.createVillage(newVillageRequest);
     }
 
-    @PutMapping("/fields/upgrade-request")
-    public void upgradeFieldRequest(@RequestBody FieldUpgradeRequest request){
-        villageService.upgradeFieldRequest(request);
+    @PostMapping("/fields/schedule-upgrade")
+    public void scheduleFieldUpgrade(@RequestBody FieldUpgradeRequest request){
+        villageService.scheduleFieldUpgrade(request);
     }
+
+    @PostMapping("/fields/upgrade")
+    public void upgradeField(@RequestBody FieldUpgradeRequest request){
+        villageService.upgradeField(request);
+    }
+
 }

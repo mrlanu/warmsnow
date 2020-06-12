@@ -1,11 +1,11 @@
 spring:
   cloud:
     config:
-      name: tasks-service
-      #      discovery:
-      #        service-id: config-server
-      #        enabled: true
-      #      fail-fast: true
+      name: schedule-service
+#      discovery:
+#        service-id: config-server
+#        enabled: true
+#      fail-fast: true
       uri: http://localhost:10000 #should be uncommented if working with Docker
       fail-fast: true
       password: 12345

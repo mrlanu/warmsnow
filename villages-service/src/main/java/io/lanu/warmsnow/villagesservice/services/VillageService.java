@@ -13,6 +13,6 @@ public interface VillageService {
     VillageDto findById(String id);
     VillageEntity save(VillageEntity villageEntity);
 
-    void upgradeFieldRequest(FieldUpgradeRequest request);
+    void scheduleFieldUpgrade(FieldUpgradeRequest request);
     VillageDto upgradeField(FieldUpgradeRequest request);
 }

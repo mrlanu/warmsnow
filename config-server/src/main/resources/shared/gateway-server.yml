@@ -32,7 +32,7 @@ zuul:
       sensitiveHeaders:
 
     tasks-service:
-      path: /tasks/**
-      serviceId: tasks-service
+      path: /schedule/**
+      serviceId: schedule-service
       stripPrefix: false
       sensitiveHeaders:

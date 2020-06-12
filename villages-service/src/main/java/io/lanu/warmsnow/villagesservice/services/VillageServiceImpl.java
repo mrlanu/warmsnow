@@ -5,18 +5,19 @@ import io.lanu.warmsnow.common_models.requests.FieldUpgradeRequest;
 import io.lanu.warmsnow.templates.templates_client.dto.FieldDto;
 import io.lanu.warmsnow.templates.templates_client.dto.VillageDto;
 import io.lanu.warmsnow.common_models.models.Field;
+import io.lanu.warmsnow.villagesservice.clients.ScheduleServiceFeignClient;
 import io.lanu.warmsnow.villagesservice.clients.TemplatesServiceFeignClient;
 import io.lanu.warmsnow.villagesservice.entities.VillageEntity;
 import io.lanu.warmsnow.common_models.requests.NewVillageRequest;
 import io.lanu.warmsnow.villagesservice.repositories.VillageRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
-import java.time.temporal.TemporalUnit;
 import java.util.List;
 import java.util.Map;
 
@@ -27,11 +28,13 @@ public class VillageServiceImpl implements VillageService {
     private VillageRepository villageRepository;
     private TemplatesServiceFeignClient templatesFeignClient;
     private final ModelMapper MAPPER = new ModelMapper();
+    private final ScheduleServiceFeignClient scheduleClient;
 
     public VillageServiceImpl(VillageRepository villageRepository,
-                              TemplatesServiceFeignClient templatesFeignClient) {
+                              TemplatesServiceFeignClient templatesFeignClient, ScheduleServiceFeignClient scheduleClient) {
         this.villageRepository = villageRepository;
         this.templatesFeignClient = templatesFeignClient;
+        this.scheduleClient = scheduleClient;
     }
 
     @Override
@@ -73,10 +76,10 @@ public class VillageServiceImpl implements VillageService {
     private void checkFieldsUpgradable(VillageEntity villageEntity){
         villageEntity.getFields()
                 .forEach(field -> {
-            if (compareResources(field.getResourcesToNextLevel(), villageEntity.getWarehouse().getGoods())){
-                field.setAbleToUpgrade(true);
-            }
-        });
+                    if (compareResources(field.getResourcesToNextLevel(), villageEntity.getWarehouse().getGoods())){
+                        field.setAbleToUpgrade(true);
+                    }
+                });
     }
 
     private boolean compareResources(Map<String, BigDecimal> need, Map<String, BigDecimal> available){
@@ -89,16 +92,19 @@ public class VillageServiceImpl implements VillageService {
     }
 
     @Override
-    public void upgradeFieldRequest(FieldUpgradeRequest request) {
+    public void scheduleFieldUpgrade(FieldUpgradeRequest request) {
         // get the village for upgrade
         VillageEntity villageEntity = villageRepository.findById(request.getVillageId()).orElseThrow();
         // get the field for upgrade in that village
-        Field field = villageEntity.getFields().get(request.getPosition());
+        Field field = villageEntity.getFields().get(request.getField().getPosition());
         field.setUnderUpgrade(true);
         field.setTimeUpgradeComplete(LocalDateTime.now().plus(field.getTimeToNextLevel(), ChronoUnit.MILLIS));
         // subtract needed resources for upgrade the Field
         Warehouse warehouse = villageEntity.getWarehouse();
         subtractResourcesFromWarehouse(warehouse, field.getResourcesToNextLevel());
+        //schedule the task
+        ResponseEntity<String> response = scheduleClient.requestFieldUpgrade(request);
+        log.info("Field upgrade scheduled - " + response.getBody());
         // save the village to DB
         villageRepository.save(villageEntity);
     }
@@ -113,7 +119,7 @@ public class VillageServiceImpl implements VillageService {
         // get the village for upgrade
         VillageEntity villageEntity = villageRepository.findById(request.getVillageId()).orElseThrow();
         // get the field for upgrade in that village
-        Field field = villageEntity.getFields().get(request.getPosition());
+        Field field = villageEntity.getFields().get(request.getField().getPosition());
         // get new field from Templates service
         FieldDto upgradedFieldTemplate = templatesFeignClient
                 .getFieldByLevelAndType(field.getLevel() + 1, field.getFieldType());

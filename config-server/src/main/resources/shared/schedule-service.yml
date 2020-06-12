@@ -10,7 +10,7 @@ spring:
       password: mrlanu
       database: warmsnow
   application:
-    name: tasks-service
+    name: schedule-service
 
 eureka:
   instance:
@@ -18,7 +18,7 @@ eureka:
 
 server:
   servlet:
-    context-path: /tasks
+    context-path: /schedule
   port: ${PORT:0}
 
 feign:
