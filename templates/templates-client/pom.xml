@@ -9,15 +9,26 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>io.lanu.warmsnow.templates</groupId>
     <artifactId>templates-client</artifactId>
 
-    <dependencies>
-        <dependency>
-            <groupId>io.lanu.warmsnow</groupId>
-            <artifactId>common-models</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
-        </dependency>
-    </dependencies>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <version>3.2.0</version>
+                <executions>
+                    <!-- Run shade goal on package phase -->
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
 
 </project>
