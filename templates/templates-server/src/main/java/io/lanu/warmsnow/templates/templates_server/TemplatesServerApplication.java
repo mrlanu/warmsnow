@@ -105,12 +105,12 @@ public class TemplatesServerApplication {
         };
     }
 
-    private Map<String, BigDecimal> getResourcesToNextLevel(int resourceAmount){
+    private Map<FieldType, BigDecimal> getResourcesToNextLevel(int resourceAmount){
         return  Map.of(
-                "wood", BigDecimal.valueOf(resourceAmount),
-                "clay", BigDecimal.valueOf(resourceAmount),
-                "iron", BigDecimal.valueOf(resourceAmount),
-                "crop", BigDecimal.valueOf(resourceAmount));
+                FieldType.WOOD, BigDecimal.valueOf(resourceAmount),
+                FieldType.CLAY, BigDecimal.valueOf(resourceAmount),
+                FieldType.IRON, BigDecimal.valueOf(resourceAmount),
+                FieldType.CROP, BigDecimal.valueOf(resourceAmount));
     }
 
 

@@ -6,9 +6,11 @@ import io.lanu.warmsnow.common_models.models.Warehouse;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.annotation.TypeAlias;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Document("villages")
@@ -26,6 +28,8 @@ public class VillageEntity {
     private VillageType villageType;
     private Warehouse warehouse;
     private List<Field> fields;
+    @LastModifiedDate
+    private LocalDateTime modified;
 
     public VillageEntity(String accountId, Integer x, Integer y, Integer culture, Integer population,
                          VillageType villageType, Warehouse warehouse, List<Field> fields) {

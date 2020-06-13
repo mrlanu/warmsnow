@@ -21,5 +21,5 @@ public class Field {
     private LocalDateTime timeUpgradeComplete;
     private boolean ableToUpgrade;
     private long timeToNextLevel;
-    private Map<String, BigDecimal> resourcesToNextLevel;
+    private Map<FieldType, BigDecimal> resourcesToNextLevel;
 }

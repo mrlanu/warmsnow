@@ -1,5 +1,6 @@
 package io.lanu.warmsnow.villagesservice.services;
 
+import io.lanu.warmsnow.common_models.FieldType;
 import io.lanu.warmsnow.common_models.models.Warehouse;
 import io.lanu.warmsnow.common_models.requests.FieldUpgradeRequest;
 import io.lanu.warmsnow.templates.templates_client.dto.FieldDto;
@@ -16,10 +17,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.math.MathContext;
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -46,6 +50,7 @@ public class VillageServiceImpl implements VillageService {
     public VillageDto findById(String id) {
         VillageEntity villageEntity = villageRepository.findById(id).orElseThrow();
         checkFieldsUpgradable(villageEntity);
+        villageEntity = calculateProducedGoods(villageEntity);
         return MAPPER.map(villageEntity, VillageDto.class);
     }
 
@@ -82,8 +87,8 @@ public class VillageServiceImpl implements VillageService {
                 });
     }
 
-    private boolean compareResources(Map<String, BigDecimal> need, Map<String, BigDecimal> available){
-        for (String key : need.keySet()){
+    private boolean compareResources(Map<FieldType, BigDecimal> need, Map<FieldType, BigDecimal> available){
+        for (FieldType key : need.keySet()){
             if (available.get(key).compareTo(need.get(key)) < 0){
                 return false;
             }
@@ -109,7 +114,7 @@ public class VillageServiceImpl implements VillageService {
         villageRepository.save(villageEntity);
     }
 
-    private void subtractResourcesFromWarehouse(Warehouse warehouse, Map<String, BigDecimal> resourcesToNextLevel) {
+    private void subtractResourcesFromWarehouse(Warehouse warehouse, Map<FieldType, BigDecimal> resourcesToNextLevel) {
         warehouse.getGoods()
                 .forEach((k, v) -> warehouse.getGoods().put(k, warehouse.getGoods().get(k).subtract(resourcesToNextLevel.get(k))));
     }
@@ -133,5 +138,36 @@ public class VillageServiceImpl implements VillageService {
         checkFieldsUpgradable(villageEntity);
         // return mapped village to DTO
         return MAPPER.map(villageEntity, VillageDto.class);
+    }
+
+    private VillageEntity calculateProducedGoods(VillageEntity villageEntity){
+
+        Long durationFromLastModified = Duration
+                .between(villageEntity.getModified(), LocalDateTime.now()).toMillis();
+
+        Map<FieldType, Double> productionPerHour = villageEntity.getFields()
+                .stream()
+                .collect(Collectors.groupingBy(Field::getFieldType,
+                        Collectors.summingDouble(buildingView -> buildingView.getProductivity().doubleValue())));
+
+        MathContext mc = new MathContext(3);
+        BigDecimal wood =
+                new BigDecimal((durationFromLastModified * productionPerHour.get(FieldType.WOOD)) / 3600000L, mc);
+        BigDecimal clay =
+                new BigDecimal((durationFromLastModified * productionPerHour.get(FieldType.CLAY)) / 3600000L, mc);
+        BigDecimal iron =
+                new BigDecimal((durationFromLastModified * productionPerHour.get(FieldType.IRON)) / 3600000L, mc);
+        BigDecimal crop =
+                new BigDecimal((durationFromLastModified * productionPerHour.get(FieldType.CROP)) / 3600000L, mc);
+
+        Map<FieldType, BigDecimal> goods = villageEntity.getWarehouse().getGoods();
+        goods.put(FieldType.WOOD, goods.get(FieldType.WOOD).add(wood));
+        goods.put(FieldType.CLAY, goods.get(FieldType.CLAY).add(clay));
+        goods.put(FieldType.IRON, goods.get(FieldType.IRON).add(iron));
+        goods.put(FieldType.CROP, goods.get(FieldType.CROP).add(crop));
+
+        log.info("Produced resources added to the Warehouse.");
+
+        return save(villageEntity);
     }
 }
