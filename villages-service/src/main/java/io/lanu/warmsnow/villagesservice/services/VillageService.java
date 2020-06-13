@@ -8,11 +8,10 @@ import io.lanu.warmsnow.common_models.requests.NewVillageRequest;
 import java.util.List;
 
 public interface VillageService {
-    VillageDto createVillage(NewVillageRequest newVillageRequest);
-    List<VillageEntity> findAll();
-    VillageDto findById(String id);
+    void createVillage(NewVillageRequest newVillageRequest);
+    VillageDto getVillageById(String id);
     VillageEntity save(VillageEntity villageEntity);
 
     void scheduleFieldUpgrade(FieldUpgradeRequest request);
-    VillageDto upgradeField(FieldUpgradeRequest request);
+    void upgradeField(FieldUpgradeRequest request);
 }

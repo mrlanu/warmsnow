@@ -18,19 +18,14 @@ public class VillageController {
         this.villageService = villageService;
     }
 
-    @GetMapping
-    public List<VillageEntity> getAll(){
-        return villageService.findAll();
-    }
-
     @GetMapping("/{villageId}")
     public VillageDto getVillageById(@PathVariable String villageId){
-        return villageService.findById(villageId);
+        return villageService.getVillageById(villageId);
     }
 
     @PostMapping("/create")
-    public VillageDto newVillage(@RequestBody NewVillageRequest newVillageRequest){
-        return villageService.createVillage(newVillageRequest);
+    public void newVillage(@RequestBody NewVillageRequest newVillageRequest){
+        villageService.createVillage(newVillageRequest);
     }
 
     @PostMapping("/fields/schedule-upgrade")
