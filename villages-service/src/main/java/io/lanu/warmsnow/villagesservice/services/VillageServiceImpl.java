@@ -57,7 +57,7 @@ public class VillageServiceImpl implements VillageService {
     }
 
     @Override
-    public void createVillage(NewVillageRequest newVillageRequest) {
+    public VillageEntity createVillage(NewVillageRequest newVillageRequest) {
         // get the village template from Template service
         VillageDto villageTemplate = templatesFeignClient.getVillageByType(newVillageRequest.getVillageType());
         // map data from template to entity
@@ -69,6 +69,7 @@ public class VillageServiceImpl implements VillageService {
         // save the village entity to DB
         VillageEntity newVillage = villageRepository.save(villageEntity);
         log.info("New village has been created");
+        return newVillage;
     }
 
     @Override
@@ -108,6 +109,6 @@ public class VillageServiceImpl implements VillageService {
         // set new field to the village
         villageEntity.getFields().set(upgradedField.getPosition(), upgradedField);
         // save upgraded village
-        villageEntity = save(villageEntity);
+        save(villageEntity);
     }
 }
