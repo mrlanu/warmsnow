@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 @Data
 @NoArgsConstructor
@@ -16,4 +17,18 @@ public class TaskModel {
     private int position;
     private int level;
     private LocalDateTime completedTime;
+    private long timeLeft; // seconds
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        TaskModel taskModel = (TaskModel) o;
+        return Objects.equals(taskId, taskModel.taskId);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(taskId);
+    }
 }

@@ -80,14 +80,13 @@ public class VillageServiceImpl implements VillageService {
         // get the field for upgrade in that village
         Field field = villageEntity.getFields().get(request.getField().getPosition());
         field.setUnderUpgrade(true);
-        field.setTimeUpgradeComplete(LocalDateTime.now().plus(field.getTimeToNextLevel(), ChronoUnit.MILLIS));
         // subtract needed resources for upgrade the Field
         Warehouse warehouse = villageEntity.getWarehouse();
         subtractResourcesFromWarehouse(warehouse, field.getResourcesToNextLevel());
         //schedule the task
         TaskModel task = new TaskModel(UUID.randomUUID().toString(), field.getFieldType(),
                 field.getPosition(), field.getLevel() + 1,
-                LocalDateTime.now().plus(field.getTimeToNextLevel(), ChronoUnit.SECONDS));
+                LocalDateTime.now().plus(field.getTimeToNextLevel(), ChronoUnit.SECONDS), field.getTimeToNextLevel());
         villageEntity.getTasks().add(task);
         log.info("Field upgrade scheduled.");
         // save the village to DB

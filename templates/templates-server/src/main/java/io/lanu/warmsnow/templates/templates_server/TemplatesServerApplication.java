@@ -92,13 +92,13 @@ public class TemplatesServerApplication {
             if (villagesService.findAll().size() == 0){
                 List<Field> fields = Arrays.asList(
                         new Field(0, 1, FieldType.WOOD, BigDecimal.valueOf(10),
-                                false, null, false, 30, getResourcesToNextLevel(50)),
+                                false, false, 30, getResourcesToNextLevel(50)),
                         new Field(1, 1, FieldType.CLAY, BigDecimal.valueOf(10),
-                                false, null, false, 30, getResourcesToNextLevel(50)),
+                                false, false, 30, getResourcesToNextLevel(50)),
                         new Field(2, 1, FieldType.IRON, BigDecimal.valueOf(10),
-                                false, null, false, 30, getResourcesToNextLevel(50)),
+                                false, false, 30, getResourcesToNextLevel(50)),
                         new Field(3, 1, FieldType.CROP, BigDecimal.valueOf(10),
-                                false, null, false, 30, getResourcesToNextLevel(50))
+                                false, false, 30, getResourcesToNextLevel(50))
                 );
                 villagesService.save(new VillageTemplateEntity(VillageType.SIX, fields));
             }

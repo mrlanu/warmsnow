@@ -7,4 +7,5 @@ public interface Builder {
     void checkFieldsUpgradable();
     void calculateProducedGoods();
     void getScheduledTasks();
+    void recalculateTasksTimeLeft();
 }
