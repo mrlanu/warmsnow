@@ -31,12 +31,14 @@ public class VillageServiceImpl implements VillageService {
     private TemplatesServiceFeignClient templatesFeignClient;
     private final ModelMapper MAPPER = new ModelMapper();
     private final ScheduleServiceFeignClient scheduleClient;
+    private final VillageViewBuilder builder;
 
-    public VillageServiceImpl(VillageRepository villageRepository,
-                              TemplatesServiceFeignClient templatesFeignClient, ScheduleServiceFeignClient scheduleClient) {
+    public VillageServiceImpl(VillageRepository villageRepository, TemplatesServiceFeignClient templatesFeignClient,
+                              ScheduleServiceFeignClient scheduleClient, VillageViewBuilder builder) {
         this.villageRepository = villageRepository;
         this.templatesFeignClient = templatesFeignClient;
         this.scheduleClient = scheduleClient;
+        this.builder = builder;
     }
 
     @Override
@@ -48,7 +50,7 @@ public class VillageServiceImpl implements VillageService {
     public VillageDto getVillageById(String id) {
         VillageEntity villageEntity = villageRepository.findById(id).orElseThrow();
         // implementation of builder template for construct VillageView
-        VillageViewBuilder builder = new VillageViewBuilder(villageEntity);
+        builder.reset(villageEntity);
         VillageViewDirector director = new VillageViewDirector(builder);
         director.constructVillageView();
         // save VillageEntity after all counting in Builder
@@ -59,15 +61,13 @@ public class VillageServiceImpl implements VillageService {
     @Override
     public VillageEntity createVillage(NewVillageRequest newVillageRequest) {
         // get the village template from Template service
-        VillageDto villageTemplate = templatesFeignClient.getVillageByType(newVillageRequest.getVillageType());
-        // map data from template to entity
-        VillageEntity villageEntity = MAPPER.map(villageTemplate, VillageEntity.class);
+        VillageEntity villageTemplate = templatesFeignClient.getVillageByType(newVillageRequest.getVillageType());
         //  set some properties
-        villageEntity.setAccountId(newVillageRequest.getAccountId());
-        villageEntity.setX(newVillageRequest.getX());
-        villageEntity.setY(newVillageRequest.getY());
+        villageTemplate.setAccountId(newVillageRequest.getAccountId());
+        villageTemplate.setX(newVillageRequest.getX());
+        villageTemplate.setY(newVillageRequest.getY());
         // save the village entity to DB
-        VillageEntity newVillage = villageRepository.save(villageEntity);
+        VillageEntity newVillage = villageRepository.save(villageTemplate);
         log.info("New village has been created");
         return newVillage;
     }

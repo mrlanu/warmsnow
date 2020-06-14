@@ -2,6 +2,7 @@ package io.lanu.warmsnow.villagesservice.entities;
 
 import io.lanu.warmsnow.common_models.VillageType;
 import io.lanu.warmsnow.common_models.models.Field;
+import io.lanu.warmsnow.common_models.models.TaskViewModel;
 import io.lanu.warmsnow.common_models.models.Warehouse;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -28,6 +29,7 @@ public class VillageEntity {
     private VillageType villageType;
     private Warehouse warehouse;
     private List<Field> fields;
+    private List<TaskViewModel> tasks;
     @LastModifiedDate
     private LocalDateTime modified;
 

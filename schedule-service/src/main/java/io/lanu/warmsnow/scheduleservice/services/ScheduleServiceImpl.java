@@ -1,5 +1,6 @@
 package io.lanu.warmsnow.scheduleservice.services;
 
+import io.lanu.warmsnow.common_models.models.TaskViewModel;
 import io.lanu.warmsnow.common_models.requests.FieldUpgradeRequest;
 import io.lanu.warmsnow.scheduleservice.clients.VillagesServiceClient;
 import io.lanu.warmsnow.scheduleservice.entities.TaskEntity;
@@ -10,11 +11,13 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -40,7 +43,7 @@ public class ScheduleServiceImpl implements ScheduleService {
 
         // count duration for the task
         long scheduledQueueDuration = getDurationsAllTasksFromQueue(request.getVillageId());
-        long finalDuration = request.getField().getTimeToNextLevel() + scheduledQueueDuration;
+        long finalDuration = request.getField().getTimeToNextLevel() * 1000 + scheduledQueueDuration;
 
         //schedule the task
         ScheduledFuture scheduledFuture = threadPoolTaskScheduler.schedule(
@@ -56,7 +59,8 @@ public class ScheduleServiceImpl implements ScheduleService {
         log.info("Task has been scheduled. Duration - " + finalDuration);
 
         //creating new Task end persist it to map & DB
-        TaskEntity newTask = new TaskEntity(taskId, request.getVillageId());
+        TaskEntity newTask = new TaskEntity(taskId, request.getVillageId(), request.getField().getPosition(),
+                request.getField().getLevel(), finalDuration);
         scheduleRepository.save(newTask);
         SCHEDULED_FUTURE_MAP.put(taskId, scheduledFuture);
 
@@ -70,16 +74,16 @@ public class ScheduleServiceImpl implements ScheduleService {
                 .sum();
     }
 
-    /*@Override
+    @Override
     public List<TaskViewModel> findAllTasksByVillageId(String villageId) {
-        List<TaskEntity> taskEntities = taskRepository.findAllByVillageId(villageId);
+        List<TaskEntity> taskEntities = scheduleRepository.findAllByVillageId(villageId);
         return taskEntities.stream()
-                .map(t -> new TaskViewModel(t.getTaskId(), t.getItemId(), t.getPosition(), t.getToLevel(),
-                        DurationFormatUtils
-                                .formatDuration(SCHEDULED_FUTURE_MAP
-                                        .get(t.getTaskId()).getDelay(TimeUnit.MILLISECONDS), "HH:mm:ss")))
+                .map(t -> {
+                    long timeLeft = SCHEDULED_FUTURE_MAP.get(t.getTaskId()).getDelay(TimeUnit.MILLISECONDS) / 1000;
+                    return new TaskViewModel(t.getTaskId(), t.getPosition(), t.getLevel(), timeLeft);
+                })
                 .collect(Collectors.toList());
-    }*/
+    }
 
     private void deleteByTaskId(String taskId) {
         scheduleRepository.deleteByTaskId(taskId);

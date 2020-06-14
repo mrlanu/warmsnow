@@ -5,10 +5,13 @@ import io.lanu.warmsnow.common_models.requests.NewVillageRequest;
 import io.lanu.warmsnow.templates.templates_client.dto.VillageDto;
 import io.lanu.warmsnow.villagesservice.entities.VillageEntity;
 import io.lanu.warmsnow.villagesservice.services.VillageService;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+@CrossOrigin(origins = "http://localhost:4200")
 @RestController
 public class VillageController {
 
@@ -30,9 +33,8 @@ public class VillageController {
     }
 
     @PostMapping("/fields/schedule-upgrade")
-    public ResponseEntity<String> scheduleFieldUpgrade(@RequestBody FieldUpgradeRequest request){
+    public void scheduleFieldUpgrade(@RequestBody FieldUpgradeRequest request){
         villageService.scheduleFieldUpgrade(request);
-        return ResponseEntity.status(HttpStatus.OK).body("Upgrade has been scheduled.");
     }
 
     // not directly call from browser (will call with Feign client from schedule-service)
@@ -41,4 +43,18 @@ public class VillageController {
         villageService.upgradeField(request);
     }
 
+    @GetMapping("/get-time/{time}")
+    public Time getTime(@PathVariable long time){
+        return new Time(time);
+    }
+
+    @Data
+    @NoArgsConstructor
+    private static class Time {
+        private long time;
+
+        public Time(long time) {
+            this.time = time;
+        }
+    }
 }

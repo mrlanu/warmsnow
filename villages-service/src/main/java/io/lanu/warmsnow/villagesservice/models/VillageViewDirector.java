@@ -9,9 +9,9 @@ public class VillageViewDirector {
     }
 
     public void constructVillageView(){
-        builder.reset();
         builder.calculateProducedGoods();
         builder.checkFieldsUpgradable();
+        builder.getScheduledTasks();
     }
 
     public void setBuilder(Builder builder) {

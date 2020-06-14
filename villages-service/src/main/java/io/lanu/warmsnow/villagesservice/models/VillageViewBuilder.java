@@ -2,32 +2,40 @@ package io.lanu.warmsnow.villagesservice.models;
 
 import io.lanu.warmsnow.common_models.FieldType;
 import io.lanu.warmsnow.common_models.models.Field;
+import io.lanu.warmsnow.common_models.models.TaskViewModel;
 import io.lanu.warmsnow.templates.templates_client.dto.VillageDto;
+import io.lanu.warmsnow.villagesservice.clients.ScheduleServiceFeignClient;
 import io.lanu.warmsnow.villagesservice.entities.VillageEntity;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
+import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
 @Slf4j
+@Service
 public class VillageViewBuilder implements Builder {
 
     private VillageEntity villageEntity;
+
+    private final ScheduleServiceFeignClient tasksService;
+
     private final ModelMapper MAPPER = new ModelMapper();
 
 
-    public VillageViewBuilder(VillageEntity villageEntity) {
-        this.villageEntity = villageEntity;
+    public VillageViewBuilder(ScheduleServiceFeignClient tasksService) {
+        this.tasksService = tasksService;
     }
 
     @Override
-    public void reset() {
-
+    public void reset(VillageEntity villageEntity) {
+        this.villageEntity = villageEntity;
     }
 
     public void checkFieldsUpgradable(){
@@ -35,7 +43,7 @@ public class VillageViewBuilder implements Builder {
                 .forEach(field -> {
                     if (compareResources(field.getResourcesToNextLevel(), villageEntity.getWarehouse().getGoods())){
                         field.setAbleToUpgrade(true);
-                    }
+                    }else field.setAbleToUpgrade(false);
                 });
     }
 
@@ -79,9 +87,14 @@ public class VillageViewBuilder implements Builder {
         log.info("Produced resources added to the Warehouse.");
     }
 
+    @Override
+    public void getScheduledTasks() {
+        List<TaskViewModel> tasks = tasksService.getScheduledTasksByVillageId(villageEntity.getVillageId());
+        villageEntity.setTasks(tasks);
+    }
+
     public VillageDto getProduct(){
         VillageDto result = MAPPER.map(villageEntity, VillageDto.class);
-        reset();
         return result;
     }
 }

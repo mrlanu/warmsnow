@@ -2,6 +2,7 @@ package io.lanu.warmsnow.templates.templates_client.dto;
 
 import io.lanu.warmsnow.common_models.VillageType;
 import io.lanu.warmsnow.common_models.models.Field;
+import io.lanu.warmsnow.common_models.models.TaskViewModel;
 import io.lanu.warmsnow.common_models.models.Warehouse;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -22,4 +23,5 @@ public class VillageDto {
     private VillageType villageType;
     private Warehouse warehouse;
     private List<Field> fields;
+    private List<TaskViewModel> tasks;
 }
