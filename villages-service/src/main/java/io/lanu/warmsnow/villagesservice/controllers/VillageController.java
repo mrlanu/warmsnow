@@ -43,18 +43,4 @@ public class VillageController {
         villageService.upgradeField(request);
     }
 
-    @GetMapping("/get-time/{time}")
-    public Time getTime(@PathVariable long time){
-        return new Time(time);
-    }
-
-    @Data
-    @NoArgsConstructor
-    private static class Time {
-        private long time;
-
-        public Time(long time) {
-            this.time = time;
-        }
-    }
 }

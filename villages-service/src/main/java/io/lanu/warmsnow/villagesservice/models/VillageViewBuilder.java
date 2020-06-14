@@ -89,8 +89,8 @@ public class VillageViewBuilder implements Builder {
 
     @Override
     public void getScheduledTasks() {
-        List<TaskViewModel> tasks = tasksService.getScheduledTasksByVillageId(villageEntity.getVillageId());
-        villageEntity.setTasks(tasks);
+        /*List<TaskViewModel> tasks = tasksService.getScheduledTasksByVillageId(villageEntity.getVillageId());
+        villageEntity.setTasks(tasks);*/
     }
 
     public VillageDto getProduct(){

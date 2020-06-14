@@ -10,18 +10,19 @@ import io.lanu.warmsnow.templates.templates_client.dto.VillageDto;
 import io.lanu.warmsnow.villagesservice.clients.ScheduleServiceFeignClient;
 import io.lanu.warmsnow.villagesservice.clients.TemplatesServiceFeignClient;
 import io.lanu.warmsnow.villagesservice.entities.VillageEntity;
+import io.lanu.warmsnow.common_models.models.TaskModel;
 import io.lanu.warmsnow.villagesservice.models.VillageViewBuilder;
 import io.lanu.warmsnow.villagesservice.models.VillageViewDirector;
 import io.lanu.warmsnow.villagesservice.repositories.VillageRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.Map;
+import java.util.UUID;
 
 @Service
 @Slf4j
@@ -84,8 +85,11 @@ public class VillageServiceImpl implements VillageService {
         Warehouse warehouse = villageEntity.getWarehouse();
         subtractResourcesFromWarehouse(warehouse, field.getResourcesToNextLevel());
         //schedule the task
-        ResponseEntity<String> response = scheduleClient.requestFieldUpgrade(request);
-        log.info("Field upgrade scheduled - " + response.getBody());
+        TaskModel task = new TaskModel(UUID.randomUUID().toString(), field.getFieldType(),
+                field.getPosition(), field.getLevel() + 1,
+                LocalDateTime.now().plus(field.getTimeToNextLevel(), ChronoUnit.SECONDS));
+        villageEntity.getTasks().add(task);
+        log.info("Field upgrade scheduled.");
         // save the village to DB
         villageRepository.save(villageEntity);
     }
