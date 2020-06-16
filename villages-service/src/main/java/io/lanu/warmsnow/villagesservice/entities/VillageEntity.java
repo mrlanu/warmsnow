@@ -4,7 +4,7 @@ import io.lanu.warmsnow.common_models.VillageType;
 import io.lanu.warmsnow.common_models.models.Field;
 import io.lanu.warmsnow.common_models.models.ProducePerHour;
 import io.lanu.warmsnow.common_models.models.Warehouse;
-import io.lanu.warmsnow.common_models.models.TaskModel;
+import io.lanu.warmsnow.common_models.models.FieldTaskModel;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
@@ -31,7 +31,7 @@ public class VillageEntity {
     private Warehouse warehouse;
     private ProducePerHour producePerHour;
     private List<Field> fields;
-    private List<TaskModel> tasks;
+    private List<FieldTaskModel> tasks;
     @LastModifiedDate
     private LocalDateTime modified;
 

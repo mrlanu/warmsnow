@@ -2,6 +2,7 @@ package io.lanu.warmsnow.villagesservice.services;
 
 import io.lanu.warmsnow.common_models.FieldType;
 import io.lanu.warmsnow.common_models.models.Field;
+import io.lanu.warmsnow.common_models.models.TaskType;
 import io.lanu.warmsnow.common_models.models.Warehouse;
 import io.lanu.warmsnow.common_models.requests.FieldUpgradeRequest;
 import io.lanu.warmsnow.common_models.requests.NewVillageRequest;
@@ -9,7 +10,7 @@ import io.lanu.warmsnow.templates.templates_client.dto.FieldDto;
 import io.lanu.warmsnow.templates.templates_client.dto.VillageDto;
 import io.lanu.warmsnow.villagesservice.clients.TemplatesServiceFeignClient;
 import io.lanu.warmsnow.villagesservice.entities.VillageEntity;
-import io.lanu.warmsnow.common_models.models.TaskModel;
+import io.lanu.warmsnow.common_models.models.FieldTaskModel;
 import io.lanu.warmsnow.villagesservice.models.VillageViewBuilder;
 import io.lanu.warmsnow.villagesservice.models.VillageViewDirector;
 import io.lanu.warmsnow.villagesservice.repositories.VillageRepository;
@@ -81,9 +82,9 @@ public class VillageServiceImpl implements VillageService {
         Warehouse warehouse = villageEntity.getWarehouse();
         subtractResourcesFromWarehouse(warehouse, field.getResourcesToNextLevel());
         //schedule the task
-        TaskModel task = new TaskModel(UUID.randomUUID().toString(), field.getFieldType(),
-                field.getPosition(), field.getLevel() + 1,
-                LocalDateTime.now().plus(field.getTimeToNextLevel(), ChronoUnit.SECONDS), field.getTimeToNextLevel());
+        FieldTaskModel task = new FieldTaskModel(UUID.randomUUID().toString(),
+                LocalDateTime.now().plus(field.getTimeToNextLevel(), ChronoUnit.SECONDS), field.getFieldType(),
+                field.getPosition(), field.getLevel() + 1, field.getTimeToNextLevel());
         villageEntity.getTasks().add(task);
         log.info("Field upgrade scheduled.");
         // save the village to DB

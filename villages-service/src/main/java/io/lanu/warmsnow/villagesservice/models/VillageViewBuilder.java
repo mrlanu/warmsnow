@@ -2,8 +2,9 @@ package io.lanu.warmsnow.villagesservice.models;
 
 import io.lanu.warmsnow.common_models.FieldType;
 import io.lanu.warmsnow.common_models.models.Field;
-import io.lanu.warmsnow.common_models.models.ProducePerHour;
+import io.lanu.warmsnow.common_models.models.FieldTaskModel;
 import io.lanu.warmsnow.common_models.models.TaskModel;
+import io.lanu.warmsnow.common_models.models.TaskType;
 import io.lanu.warmsnow.templates.templates_client.dto.FieldDto;
 import io.lanu.warmsnow.templates.templates_client.dto.VillageDto;
 import io.lanu.warmsnow.villagesservice.clients.TemplatesServiceFeignClient;
@@ -15,7 +16,6 @@ import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.time.Duration;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.Comparator;
@@ -65,23 +65,27 @@ public class VillageViewBuilder implements Builder {
     @Override
     public void calculateProducedGoods(){
         // filter all tasks that the village has with time before now
-        List<TaskModel> taskModels = villageEntity.getTasks()
+        List<TaskModel> tasksList = villageEntity.getTasks()
                 .stream()
-                .filter(taskModel -> taskModel.getCompletedTime().isBefore(LocalDateTime.now()))
-                .sorted(Comparator.comparing(TaskModel::getCompletedTime))
+                .filter(taskModel -> taskModel.getExecution().isBefore(LocalDateTime.now()))
+                .sorted(Comparator.comparing(FieldTaskModel::getExecution))
                 .collect(Collectors.toList());
 
         LocalDateTime modified = villageEntity.getModified();
 
         // if the village doesnt have any tasks
-        if (taskModels.size() == 0) {
+        if (tasksList.size() == 0) {
             calculate(villageEntity.getModified(), LocalDateTime.now());
         } else { // if the village does any tasks lastModified should be changed every task's completed time
             // calculate between each task which should be completed before now
-            for (TaskModel task : taskModels) {
-                calculate(modified, task.getCompletedTime());
-                modified = task.getCompletedTime();
-                upgradeField(task);
+            for (TaskModel task : tasksList) {
+                // recalculate warehouse leftovers
+                calculate(modified, task.getExecution());
+                modified = task.getExecution();
+                // execute when type is FIELD only
+                if (task instanceof FieldTaskModel) {
+                    upgradeField((FieldTaskModel) task);
+                } // else task instanceof UnitTask do something with army
                 villageEntity.getTasks().remove(task);
             }
             // last calculate between last task and now
@@ -89,12 +93,14 @@ public class VillageViewBuilder implements Builder {
         }
     }
 
-    private void recalculateProducePerHour(){
-        Map<FieldType, Integer> productionPerHour = villageEntity.getFields()
-                .stream()
-                .collect(Collectors.groupingBy(Field::getFieldType,
-                        Collectors.summingInt(Field::getProductivity)));
-        villageEntity.getProducePerHour().setGoods(productionPerHour);
+    @Override
+    public void recalculateTasksTimeLeft(){
+        villageEntity.getTasks().forEach(taskModel ->
+                taskModel.setTimeLeft(ChronoUnit.SECONDS.between(LocalDateTime.now(), taskModel.getExecution())));
+    }
+
+    public VillageDto getProduct(){
+        return MAPPER.map(villageEntity, VillageDto.class);
     }
 
     private void calculate(LocalDateTime lastModified, LocalDateTime untilTime){
@@ -122,26 +128,24 @@ public class VillageViewBuilder implements Builder {
         log.info("Produced resources added to the Warehouse.");
     }
 
-    private void upgradeField(TaskModel taskModel) {
+    private void upgradeField(FieldTaskModel fieldTaskModel) {
         // get new field from Templates service
         FieldDto upgradedFieldTemplate = templatesService
-                .getFieldByLevelAndType(taskModel.getLevel(), taskModel.getFieldType());
-        upgradedFieldTemplate.setPosition(taskModel.getPosition());
+                .getFieldByLevelAndType(fieldTaskModel.getLevel(), fieldTaskModel.getFieldType());
+        upgradedFieldTemplate.setPosition(fieldTaskModel.getPosition());
         Field upgradedField = MAPPER.map(upgradedFieldTemplate, Field.class);
+        // calculate difference in production for addToProducePerHour method
+        Field previousField = villageEntity.getFields().get(fieldTaskModel.getPosition());
+        int differenceProduction = upgradedField.getProductivity() - previousField.getProductivity();
         // set new field to the village
         villageEntity.getFields().set(upgradedField.getPosition(), upgradedField);
-        recalculateProducePerHour();
+        // add to ProducePerHour
+        addToProducePerHour(upgradedField.getFieldType(), differenceProduction);
     }
 
-    @Override
-    public void recalculateTasksTimeLeft(){
-        villageEntity.getTasks().forEach(taskModel -> {
-            taskModel
-                .setTimeLeft(ChronoUnit.SECONDS.between(LocalDateTime.now(), taskModel.getCompletedTime()));
-        });
-    }
-
-    public VillageDto getProduct(){
-        return MAPPER.map(villageEntity, VillageDto.class);
+    private void addToProducePerHour(FieldType fieldType, Integer amount){
+        Map<FieldType, Integer> previous = villageEntity.getProducePerHour().getGoods();
+        // add or subtract amount
+        villageEntity.getProducePerHour().getGoods().put(fieldType, previous.get(fieldType) + amount);
     }
 }

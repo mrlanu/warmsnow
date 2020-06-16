@@ -3,7 +3,7 @@ package io.lanu.warmsnow.templates.templates_server.entities;
 import io.lanu.warmsnow.common_models.VillageType;
 import io.lanu.warmsnow.common_models.models.Field;
 import io.lanu.warmsnow.common_models.models.ProducePerHour;
-import io.lanu.warmsnow.common_models.models.TaskModel;
+import io.lanu.warmsnow.common_models.models.FieldTaskModel;
 import io.lanu.warmsnow.common_models.models.Warehouse;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -28,7 +28,7 @@ public class VillageTemplateEntity {
     private Warehouse warehouse;
     private ProducePerHour producePerHour;
     private List<Field> fields;
-    private List<TaskModel> tasks;
+    private List<FieldTaskModel> tasks;
     // private List<Building> buildings;
 
 
