@@ -2,6 +2,7 @@ package io.lanu.warmsnow.villagesservice.models;
 
 import io.lanu.warmsnow.common_models.FieldType;
 import io.lanu.warmsnow.common_models.models.Field;
+import io.lanu.warmsnow.common_models.models.ProducePerHour;
 import io.lanu.warmsnow.common_models.models.TaskModel;
 import io.lanu.warmsnow.templates.templates_client.dto.FieldDto;
 import io.lanu.warmsnow.templates.templates_client.dto.VillageDto;
@@ -88,24 +89,29 @@ public class VillageViewBuilder implements Builder {
         }
     }
 
-    private void calculate(LocalDateTime lastModified, LocalDateTime untilTime){
-        Long durationFromLastModified = Duration
-                .between(lastModified, untilTime).toMillis();
-
-        Map<FieldType, Double> productionPerHour = villageEntity.getFields()
+    private void recalculateProducePerHour(){
+        Map<FieldType, Integer> productionPerHour = villageEntity.getFields()
                 .stream()
                 .collect(Collectors.groupingBy(Field::getFieldType,
-                        Collectors.summingDouble(buildingView -> buildingView.getProductivity().doubleValue())));
+                        Collectors.summingInt(Field::getProductivity)));
+        villageEntity.getProducePerHour().setGoods(productionPerHour);
+    }
+
+    private void calculate(LocalDateTime lastModified, LocalDateTime untilTime){
+        long durationFromLastModified = Duration
+                .between(lastModified, untilTime).toMillis();
+
+        Map<FieldType, Integer> producePerHour = villageEntity.getProducePerHour().getGoods();
 
         MathContext mc = new MathContext(3);
         BigDecimal wood =
-                new BigDecimal((durationFromLastModified * productionPerHour.get(FieldType.WOOD)) / 3600000L, mc);
+                new BigDecimal((durationFromLastModified * (double) producePerHour.get(FieldType.WOOD)) / 3600000L, mc);
         BigDecimal clay =
-                new BigDecimal((durationFromLastModified * productionPerHour.get(FieldType.CLAY)) / 3600000L, mc);
+                new BigDecimal((durationFromLastModified * (double) producePerHour.get(FieldType.CLAY)) / 3600000L, mc);
         BigDecimal iron =
-                new BigDecimal((durationFromLastModified * productionPerHour.get(FieldType.IRON)) / 3600000L, mc);
+                new BigDecimal((durationFromLastModified * (double) producePerHour.get(FieldType.IRON)) / 3600000L, mc);
         BigDecimal crop =
-                new BigDecimal((durationFromLastModified * productionPerHour.get(FieldType.CROP)) / 3600000L, mc);
+                new BigDecimal((durationFromLastModified * (double) producePerHour.get(FieldType.CROP)) / 3600000L, mc);
 
         Map<FieldType, BigDecimal> goods = villageEntity.getWarehouse().getGoods();
         goods.put(FieldType.WOOD, goods.get(FieldType.WOOD).add(wood));
@@ -124,6 +130,7 @@ public class VillageViewBuilder implements Builder {
         Field upgradedField = MAPPER.map(upgradedFieldTemplate, Field.class);
         // set new field to the village
         villageEntity.getFields().set(upgradedField.getPosition(), upgradedField);
+        recalculateProducePerHour();
     }
 
     @Override

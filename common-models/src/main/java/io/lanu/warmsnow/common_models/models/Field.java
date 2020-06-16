@@ -15,7 +15,7 @@ public class Field {
     private int position;
     private int level;
     private FieldType fieldType;
-    private BigDecimal productivity;
+    private int productivity;
     private boolean underUpgrade;
     private boolean ableToUpgrade;
     private long timeToNextLevel;

@@ -64,21 +64,21 @@ public class TemplatesServerApplication {
         return args -> {
             if (fieldsService.findAll().size() == 0){
                 List<FieldTemplateEntity> fields = Arrays.asList(
-                        new FieldTemplateEntity(0, 2, FieldType.WOOD, BigDecimal.valueOf(75),
+                        new FieldTemplateEntity(0, 2, FieldType.WOOD, 75,
                                 false, false, 60, getResourcesToNextLevel(150)),
-                        new FieldTemplateEntity(0, 2, FieldType.CLAY, BigDecimal.valueOf(75),
+                        new FieldTemplateEntity(0, 2, FieldType.CLAY, 75,
                                 false, false, 60, getResourcesToNextLevel(150)),
-                        new FieldTemplateEntity(0, 2, FieldType.IRON, BigDecimal.valueOf(75),
+                        new FieldTemplateEntity(0, 2, FieldType.IRON, 75,
                                 false, false, 60, getResourcesToNextLevel(150)),
-                        new FieldTemplateEntity(0, 2, FieldType.CROP, BigDecimal.valueOf(75),
+                        new FieldTemplateEntity(0, 2, FieldType.CROP, 75,
                                 false, false, 60, getResourcesToNextLevel(150)),
-                        new FieldTemplateEntity(0, 3, FieldType.WOOD, BigDecimal.valueOf(150),
+                        new FieldTemplateEntity(0, 3, FieldType.WOOD, 150,
                                 false, false, 180, getResourcesToNextLevel(550)),
-                        new FieldTemplateEntity(0, 3, FieldType.CLAY, BigDecimal.valueOf(150),
+                        new FieldTemplateEntity(0, 3, FieldType.CLAY, 150,
                                 false, false, 180, getResourcesToNextLevel(550)),
-                        new FieldTemplateEntity(0, 3, FieldType.IRON, BigDecimal.valueOf(150),
+                        new FieldTemplateEntity(0, 3, FieldType.IRON, 150,
                                 false, false, 180, getResourcesToNextLevel(550)),
-                        new FieldTemplateEntity(0, 3, FieldType.CROP, BigDecimal.valueOf(150),
+                        new FieldTemplateEntity(0, 3, FieldType.CROP, 150,
                                 false, false, 180, getResourcesToNextLevel(550))
                 );
                 fieldsService.saveAll(fields);
@@ -91,13 +91,13 @@ public class TemplatesServerApplication {
         return args -> {
             if (villagesService.findAll().size() == 0){
                 List<Field> fields = Arrays.asList(
-                        new Field(0, 1, FieldType.WOOD, BigDecimal.valueOf(10),
+                        new Field(0, 1, FieldType.WOOD, 10,
                                 false, false, 30, getResourcesToNextLevel(50)),
-                        new Field(1, 1, FieldType.CLAY, BigDecimal.valueOf(10),
+                        new Field(1, 1, FieldType.CLAY, 10,
                                 false, false, 30, getResourcesToNextLevel(50)),
-                        new Field(2, 1, FieldType.IRON, BigDecimal.valueOf(10),
+                        new Field(2, 1, FieldType.IRON, 10,
                                 false, false, 30, getResourcesToNextLevel(50)),
-                        new Field(3, 1, FieldType.CROP, BigDecimal.valueOf(10),
+                        new Field(3, 1, FieldType.CROP, 10,
                                 false, false, 30, getResourcesToNextLevel(50))
                 );
                 villagesService.save(new VillageTemplateEntity(VillageType.SIX, fields));
