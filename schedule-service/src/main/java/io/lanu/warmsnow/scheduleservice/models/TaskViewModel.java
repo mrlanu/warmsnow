@@ -1,4 +1,4 @@
-package io.lanu.warmsnow.common_models.models;
+package io.lanu.warmsnow.scheduleservice.models;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

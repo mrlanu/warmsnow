@@ -127,12 +127,6 @@ public class VillageViewBuilder implements Builder {
     }
 
     @Override
-    public void getScheduledTasks() {
-        /*List<TaskViewModel> tasks = tasksService.getScheduledTasksByVillageId(villageEntity.getVillageId());
-        villageEntity.setTasks(tasks);*/
-    }
-
-    @Override
     public void recalculateTasksTimeLeft(){
         villageEntity.getTasks().forEach(taskModel -> {
             taskModel

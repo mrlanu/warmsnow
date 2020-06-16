@@ -12,7 +12,6 @@ public class VillageViewDirector {
         builder.calculateProducedGoods();
         builder.checkFieldsUpgradable();
         builder.recalculateTasksTimeLeft();
-        //builder.getScheduledTasks();
     }
 
     public void setBuilder(Builder builder) {

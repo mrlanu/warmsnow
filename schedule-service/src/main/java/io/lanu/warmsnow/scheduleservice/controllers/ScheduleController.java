@@ -1,6 +1,6 @@
 package io.lanu.warmsnow.scheduleservice.controllers;
 
-import io.lanu.warmsnow.common_models.models.TaskViewModel;
+import io.lanu.warmsnow.scheduleservice.models.TaskViewModel;
 import io.lanu.warmsnow.common_models.requests.FieldUpgradeRequest;
 import io.lanu.warmsnow.scheduleservice.services.ScheduleService;
 import org.springframework.http.HttpStatus;

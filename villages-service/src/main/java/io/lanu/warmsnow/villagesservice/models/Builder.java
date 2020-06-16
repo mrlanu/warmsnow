@@ -6,6 +6,5 @@ public interface Builder {
     void reset(VillageEntity villageEntity);
     void checkFieldsUpgradable();
     void calculateProducedGoods();
-    void getScheduledTasks();
     void recalculateTasksTimeLeft();
 }

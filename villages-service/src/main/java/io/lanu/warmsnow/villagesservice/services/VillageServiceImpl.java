@@ -7,7 +7,6 @@ import io.lanu.warmsnow.common_models.requests.FieldUpgradeRequest;
 import io.lanu.warmsnow.common_models.requests.NewVillageRequest;
 import io.lanu.warmsnow.templates.templates_client.dto.FieldDto;
 import io.lanu.warmsnow.templates.templates_client.dto.VillageDto;
-import io.lanu.warmsnow.villagesservice.clients.ScheduleServiceFeignClient;
 import io.lanu.warmsnow.villagesservice.clients.TemplatesServiceFeignClient;
 import io.lanu.warmsnow.villagesservice.entities.VillageEntity;
 import io.lanu.warmsnow.common_models.models.TaskModel;
@@ -31,14 +30,12 @@ public class VillageServiceImpl implements VillageService {
     private VillageRepository villageRepository;
     private TemplatesServiceFeignClient templatesFeignClient;
     private final ModelMapper MAPPER = new ModelMapper();
-    private final ScheduleServiceFeignClient scheduleClient;
     private final VillageViewBuilder builder;
 
     public VillageServiceImpl(VillageRepository villageRepository, TemplatesServiceFeignClient templatesFeignClient,
-                              ScheduleServiceFeignClient scheduleClient, VillageViewBuilder builder) {
+                              VillageViewBuilder builder) {
         this.villageRepository = villageRepository;
         this.templatesFeignClient = templatesFeignClient;
-        this.scheduleClient = scheduleClient;
         this.builder = builder;
     }
 
