@@ -25,6 +25,12 @@ zuul:
       stripPrefix: false #if zuul should replace the "/uaa/" segment
       sensitiveHeaders:
 
+    armies-service:
+      path: /armies/**
+      serviceId: armies-service
+      stripPrefix: false
+      sensitiveHeaders:
+
     templates-server:
       path: /templates/**
       serviceId: templates-server
