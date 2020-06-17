@@ -1,12 +1,16 @@
 package io.lanu.warmsnow.templates.templates_server;
 
 import io.lanu.warmsnow.common_models.FieldType;
+import io.lanu.warmsnow.common_models.NationsType;
+import io.lanu.warmsnow.common_models.UnitType;
 import io.lanu.warmsnow.common_models.VillageType;
 import io.lanu.warmsnow.common_models.models.Field;
 import io.lanu.warmsnow.templates.templates_server.entities.FieldTemplateEntity;
+import io.lanu.warmsnow.templates.templates_server.entities.UnitTemplateEntity;
 import io.lanu.warmsnow.templates.templates_server.entities.VillageTemplateEntity;
 import io.lanu.warmsnow.templates.templates_server.services.BuildingsService;
 import io.lanu.warmsnow.templates.templates_server.services.FieldsService;
+import io.lanu.warmsnow.templates.templates_server.services.UnitsService;
 import io.lanu.warmsnow.templates.templates_server.services.VillagesService;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -24,12 +28,14 @@ public class TemplatesServerApplication {
     private final BuildingsService buildingsService;
     private final VillagesService villagesService;
     private final FieldsService fieldsService;
+    private final UnitsService unitsService;
 
     public TemplatesServerApplication(BuildingsService buildingsService,
-                                      VillagesService villagesService, FieldsService fieldsService) {
+                                      VillagesService villagesService, FieldsService fieldsService, UnitsService unitsService) {
         this.buildingsService = buildingsService;
         this.villagesService = villagesService;
         this.fieldsService = fieldsService;
+        this.unitsService = unitsService;
     }
 
     public static void main(String[] args) {
@@ -101,6 +107,22 @@ public class TemplatesServerApplication {
                                 false, false, 30, getResourcesToNextLevel(50))
                 );
                 villagesService.save(new VillageTemplateEntity(VillageType.SIX, fields));
+            }
+        };
+    }
+
+    @Bean
+    public CommandLineRunner createSomeUnitsTemplates() {
+        return args -> {
+            if (unitsService.findAll().size() == 0){
+                Map<FieldType, Integer> resources = Map.of(
+                        FieldType.WOOD, 120,
+                        FieldType.CLAY, 100,
+                        FieldType.IRON, 150,
+                        FieldType.CROP, 30);
+
+                unitsService.save(new UnitTemplateEntity(UnitType.LEGIONNAIRE, NationsType.ROME, resources,
+                        40, 35, 60, 6, 50, 1, 1166));
             }
         };
     }

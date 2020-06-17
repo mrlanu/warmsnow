@@ -2,8 +2,8 @@ package io.lanu.warmsnow.templates.templates_server.entities;
 
 import io.lanu.warmsnow.common_models.VillageType;
 import io.lanu.warmsnow.common_models.models.Field;
-import io.lanu.warmsnow.common_models.models.ProducePerHour;
 import io.lanu.warmsnow.common_models.models.FieldTaskModel;
+import io.lanu.warmsnow.common_models.models.ProducePerHour;
 import io.lanu.warmsnow.common_models.models.Warehouse;
 import lombok.Data;
 import lombok.NoArgsConstructor;
