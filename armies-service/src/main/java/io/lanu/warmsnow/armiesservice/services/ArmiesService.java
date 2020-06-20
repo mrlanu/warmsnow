@@ -1,8 +1,8 @@
 package io.lanu.warmsnow.armiesservice.services;
 
-import io.lanu.warmsnow.common_models.UnitType;
-import io.lanu.warmsnow.templates.templates_client.dto.UnitDto;
+import io.lanu.warmsnow.armiesservice.entities.ArmyOrderEntity;
+import io.lanu.warmsnow.armiesservice.models.ArmyOrderRequest;
 
 public interface ArmiesService {
-    UnitDto getUnitByType(UnitType unitType);
+    ArmyOrderEntity orderUnits(ArmyOrderRequest armyOrderRequest);
 }
