@@ -1,0 +1,32 @@
+spring:
+  devtools:
+    restart:
+      enabled: true
+  data:
+    mongodb:
+      host: localhost #should be localhost (without Docker)
+      port: 27017
+      username: mrlanu
+      password: mrlanu
+      database: warmsnow
+  application:
+    name: constructions-service
+
+eureka:
+  instance:
+    instance-id: ${spring.application.name}:${spring.application.instance-id:${random.value}}
+
+server:
+  servlet:
+    context-path: /constructions
+  port: ${PORT:0}
+
+feign:
+  hystrix:
+    enabled: true
+  client:
+    config:
+      default:
+        connectTimeout: 5000
+        readTimeout: 5000
+        loggerLevel: basic

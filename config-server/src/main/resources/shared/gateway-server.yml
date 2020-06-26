@@ -42,3 +42,9 @@ zuul:
       serviceId: schedule-service
       stripPrefix: false
       sensitiveHeaders:
+
+    constructions-service:
+      path: /constructions/**
+      serviceId: constructions-service
+      stripPrefix: false
+      sensitiveHeaders:

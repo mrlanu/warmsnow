@@ -35,6 +35,7 @@
         <module>common-models</module>
         <module>schedule-service</module>
         <module>armies-service</module>
+        <module>constructions-service</module>
     </modules>
 
     <dependencyManagement>
