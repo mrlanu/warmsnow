@@ -8,8 +8,6 @@ import io.lanu.warmsnow.villagesservice.entities.VillageEntity;
 public interface VillageService {
     VillageEntity createVillage(NewVillageRequest newVillageRequest);
     VillageDto getVillageById(String id);
-    VillageEntity save(VillageEntity villageEntity);
 
     void scheduleFieldUpgrade(FieldUpgradeRequest request);
-    void upgradeField(FieldUpgradeRequest request);
 }

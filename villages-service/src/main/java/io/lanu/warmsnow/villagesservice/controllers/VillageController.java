@@ -38,9 +38,9 @@ public class VillageController {
     }
 
     // not directly call from browser (will call with Feign client from schedule-service)
-    @PostMapping("/fields/upgrade")
+    /*@PostMapping("/fields/upgrade")
     public void upgradeField(@RequestBody FieldUpgradeRequest request){
         villageService.upgradeField(request);
-    }
+    }*/
 
 }
