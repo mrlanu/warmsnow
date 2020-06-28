@@ -1,7 +1,7 @@
 package io.lanu.warmsnow.villagesservice.clients;
 
 
-import io.lanu.warmsnow.common_models.dto.FieldTaskDto;
+import io.lanu.warmsnow.villagesservice.models.FieldTask;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -12,5 +12,5 @@ import java.util.List;
 public interface ConstructionsServiceFeignClient {
 
     @GetMapping(value = "/constructions/{villageId}/fields")
-    List<FieldTaskDto> getTasksByVillageId(@PathVariable("villageId") String villageId);
+    List<FieldTask> getTasksByVillageId(@PathVariable("villageId") String villageId);
 }

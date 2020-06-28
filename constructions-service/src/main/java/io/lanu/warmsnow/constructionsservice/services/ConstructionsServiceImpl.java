@@ -29,24 +29,29 @@ public class ConstructionsServiceImpl implements ConstructionsService {
 
     @Override
     public void scheduleFieldUpgrade(FieldUpgradeRequest request) {
+        // fetch template and increment one level
         FieldDto upgradedFieldDto = templateServiceClient.
                 getFieldByLevelAndType(request.getField().getLevel() + 1, request.getField().getFieldType());
 
+        // map FieldDto to Field
         Field upgradedField = MAPPER.
                 map(upgradedFieldDto, Field.class);
 
+        // new entity, execution time from the request
         FieldTaskEntity fieldTaskEntity = new FieldTaskEntity(request.getVillageId(), upgradedField,
-                LocalDateTime.now().plus(upgradedField.getTimeToNextLevel(), ChronoUnit.SECONDS));
+                LocalDateTime.now().plus(request.getField().getTimeToNextLevel(), ChronoUnit.SECONDS));
 
         constructionsRepository.save(fieldTaskEntity);
     }
 
     @Override
     public List<FieldTaskDto> getAllTasksByVillageId(String villageId) {
-        return constructionsRepository.findAllByVillageId(villageId)
+        List<FieldTaskDto> result = constructionsRepository.findAllByVillageId(villageId)
                 .stream()
                 .map(village -> MAPPER.map(village, FieldTaskDto.class))
                 .collect(Collectors.toList());
-
+        // delete all tasks before now
+        constructionsRepository.deleteAllByVillageIdAndExecutionTimeBefore(villageId, LocalDateTime.now());
+        return result;
     }
 }

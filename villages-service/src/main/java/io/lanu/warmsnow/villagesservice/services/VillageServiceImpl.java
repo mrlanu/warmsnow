@@ -1,15 +1,17 @@
 package io.lanu.warmsnow.villagesservice.services;
 
 import io.lanu.warmsnow.common_models.FieldType;
-import io.lanu.warmsnow.common_models.dto.FieldTaskDto;
-import io.lanu.warmsnow.common_models.models.*;
+import io.lanu.warmsnow.common_models.models.Field;
+import io.lanu.warmsnow.common_models.models.FieldTaskModel;
+import io.lanu.warmsnow.common_models.models.Warehouse;
 import io.lanu.warmsnow.common_models.requests.FieldUpgradeRequest;
 import io.lanu.warmsnow.common_models.requests.NewVillageRequest;
-import io.lanu.warmsnow.templates.templates_client.dto.FieldDto;
 import io.lanu.warmsnow.templates.templates_client.dto.VillageDto;
 import io.lanu.warmsnow.villagesservice.clients.ConstructionsServiceFeignClient;
 import io.lanu.warmsnow.villagesservice.clients.TemplatesServiceFeignClient;
 import io.lanu.warmsnow.villagesservice.entities.VillageEntity;
+import io.lanu.warmsnow.villagesservice.models.FieldTask;
+import io.lanu.warmsnow.villagesservice.models.TaskExecution;
 import io.lanu.warmsnow.villagesservice.repositories.VillageRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
@@ -20,10 +22,7 @@ import java.math.MathContext;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -57,16 +56,32 @@ public class VillageServiceImpl implements VillageService {
 
     @Override
     public VillageDto getVillageById(String id) {
+        // fetch the Village
         VillageEntity villageEntity = villageRepository.findById(id).orElseThrow();
-        // fetch construction tasks
-        List<FieldTaskDto> fieldTasks = constructionsClient.getTasksByVillageId(id);
-        // fetch army tasks
 
-        calculateProducedGoods(villageEntity);
+        // fetch construction tasks
+        List<FieldTask> fieldTasks = constructionsClient.getTasksByVillageId(id);
+
+        // check weather is field under upgrade if so change status
+        fieldTasks.forEach(fieldTask -> {
+            Field f = villageEntity.getFields().get(fieldTask.getField().getPosition());
+            f.setUnderUpgrade(true);
+        });
+
+        // fetch army tasks
+        // List<ArmyTask> armyTasks = armyClient.getTasksByVillageId(id);
+
+        // combine all tasks
+
+        List<TaskExecution> taskExecutions = new ArrayList<>();
+        taskExecutions.addAll(fieldTasks);
+        // taskExecutions.addAll(armyTasks);
+
+        calculateProducedGoods(villageEntity, taskExecutions);
         checkFieldsUpgradable(villageEntity);
         recalculateTasksTimeLeft(villageEntity);
 
-        // save VillageEntity after all counting in Builder
+        // save VillageEntity after all counting
         villageRepository.save(villageEntity);
         return MAPPER.map(villageEntity, VillageDto.class);
     }
@@ -114,12 +129,12 @@ public class VillageServiceImpl implements VillageService {
         return true;
     }
 
-    private void calculateProducedGoods(VillageEntity villageEntity) {
+    private void calculateProducedGoods(VillageEntity villageEntity, List<TaskExecution> taskExecution) {
         // filter all tasks that the village has with time before now
-        List<TaskModel> tasksList = villageEntity.getTasks()
+        List<TaskExecution> tasksList = taskExecution
                 .stream()
-                .filter(taskModel -> taskModel.getExecution().isBefore(LocalDateTime.now()))
-                .sorted(Comparator.comparing(FieldTaskModel::getExecution))
+                .filter(task -> task.getExecutionTime().isBefore(LocalDateTime.now()))
+                .sorted(Comparator.comparing(TaskExecution::getExecutionTime))
                 .collect(Collectors.toList());
 
         LocalDateTime modified = villageEntity.getModified();
@@ -129,15 +144,11 @@ public class VillageServiceImpl implements VillageService {
             calculate(villageEntity, villageEntity.getModified(), LocalDateTime.now());
         } else { // if the village does any tasks lastModified should be changed every task's completed time
             // calculate between each task which should be completed before now
-            for (TaskModel task : tasksList) {
+            for (TaskExecution task : tasksList) {
                 // recalculate warehouse leftovers
-                calculate(villageEntity, modified, task.getExecution());
-                modified = task.getExecution();
-                // execute when type is FIELD only
-                if (task instanceof FieldTaskModel) {
-                    upgradeField(villageEntity, (FieldTaskModel) task);
-                } // else task instanceof UnitTask do something with army
-                villageEntity.getTasks().remove(task);
+                calculate(villageEntity, modified, task.getExecutionTime());
+                modified = task.getExecutionTime();
+                task.executeTask(villageEntity);
             }
             // last calculate between last task and now
             calculate(villageEntity, modified, LocalDateTime.now());
@@ -174,7 +185,7 @@ public class VillageServiceImpl implements VillageService {
                 .forEach((k, v) -> warehouse.getGoods().put(k, warehouse.getGoods().get(k).subtract(resourcesToNextLevel.get(k))));
     }
 
-    private void upgradeField(VillageEntity villageEntity, FieldTaskModel fieldTaskModel) {
+    /*private void upgradeField(VillageEntity villageEntity, FieldTaskModel fieldTaskModel) {
         // get new field from Templates service
         FieldDto upgradedFieldTemplate = templatesFeignClient
                 .getFieldByLevelAndType(fieldTaskModel.getLevel(), fieldTaskModel.getFieldType());
@@ -187,11 +198,11 @@ public class VillageServiceImpl implements VillageService {
         villageEntity.getFields().set(upgradedField.getPosition(), upgradedField);
         // add to ProducePerHour
         addToProducePerHour(villageEntity, upgradedField.getFieldType(), differenceProduction);
-    }
+    }*/
 
-    private void addToProducePerHour(VillageEntity villageEntity, FieldType fieldType, Integer amount){
+    /*private void addToProducePerHour(VillageEntity villageEntity, FieldType fieldType, Integer amount){
         Map<FieldType, Integer> previous = villageEntity.getProducePerHour().getGoods();
         // add or subtract amount
         villageEntity.getProducePerHour().getGoods().put(fieldType, previous.get(fieldType) + amount);
-    }
+    }*/
 }
