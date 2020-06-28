@@ -1,11 +1,13 @@
 package io.lanu.warmsnow.villagesservice.services;
 
 import io.lanu.warmsnow.common_models.FieldType;
+import io.lanu.warmsnow.common_models.dto.FieldTaskDto;
 import io.lanu.warmsnow.common_models.models.*;
 import io.lanu.warmsnow.common_models.requests.FieldUpgradeRequest;
 import io.lanu.warmsnow.common_models.requests.NewVillageRequest;
 import io.lanu.warmsnow.templates.templates_client.dto.FieldDto;
 import io.lanu.warmsnow.templates.templates_client.dto.VillageDto;
+import io.lanu.warmsnow.villagesservice.clients.ConstructionsServiceFeignClient;
 import io.lanu.warmsnow.villagesservice.clients.TemplatesServiceFeignClient;
 import io.lanu.warmsnow.villagesservice.entities.VillageEntity;
 import io.lanu.warmsnow.villagesservice.repositories.VillageRepository;
@@ -30,11 +32,13 @@ public class VillageServiceImpl implements VillageService {
 
     private VillageRepository villageRepository;
     private TemplatesServiceFeignClient templatesFeignClient;
+    private final ConstructionsServiceFeignClient constructionsClient;
     private final ModelMapper MAPPER = new ModelMapper();
 
-    public VillageServiceImpl(VillageRepository villageRepository, TemplatesServiceFeignClient templatesFeignClient) {
+    public VillageServiceImpl(VillageRepository villageRepository, TemplatesServiceFeignClient templatesFeignClient, ConstructionsServiceFeignClient constructionsClient) {
         this.villageRepository = villageRepository;
         this.templatesFeignClient = templatesFeignClient;
+        this.constructionsClient = constructionsClient;
     }
 
     @Override
@@ -54,6 +58,9 @@ public class VillageServiceImpl implements VillageService {
     @Override
     public VillageDto getVillageById(String id) {
         VillageEntity villageEntity = villageRepository.findById(id).orElseThrow();
+        // fetch construction tasks
+        List<FieldTaskDto> fieldTasks = constructionsClient.getTasksByVillageId(id);
+        // fetch army tasks
 
         calculateProducedGoods(villageEntity);
         checkFieldsUpgradable(villageEntity);
