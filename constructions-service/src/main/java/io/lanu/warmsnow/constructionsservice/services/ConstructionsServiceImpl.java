@@ -39,6 +39,7 @@ public class ConstructionsServiceImpl implements ConstructionsService {
                 map(upgradedFieldDto, Field.class);
 
         // new entity, execution time from the request
+        // store old & new Field in order to charge goods for upgrade(old) & upgrade by itself(new)
         FieldTaskEntity fieldTaskEntity = new FieldTaskEntity(request.getVillageId(), request.getField(), upgradedField,
                 LocalDateTime.now().plus(request.getField().getTimeToNextLevel(), ChronoUnit.SECONDS),
                 request.getField().getTimeToNextLevel());
@@ -55,8 +56,8 @@ public class ConstructionsServiceImpl implements ConstructionsService {
                 .peek(this::recalculateTasksTimeLeft)
                 .collect(Collectors.toList());
 
-        // when is getting tasks for first time all of them should be paid after return to village-service
-        // village-service will take care about that
+        // when tasks are being fetched for first time all of them should be paid after return to the village-service
+        // village-service will take care about them
         List<FieldTaskEntity> afterReturn = taskEntities
                 .stream()
                 .filter(fieldTaskDto -> !fieldTaskDto.isPaid())

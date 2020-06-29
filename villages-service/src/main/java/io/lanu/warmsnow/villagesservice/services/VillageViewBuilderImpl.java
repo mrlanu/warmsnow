@@ -39,9 +39,9 @@ public class VillageViewBuilderImpl implements VillageViewBuilder{
 
     @Override
     public VillageDto build(String villageId) {
+        List<TaskExecution> taskExecutions = new ArrayList<>();
         // fetch the Village
         VillageEntity villageEntity = villageRepository.findById(villageId).orElseThrow();
-
         // fetch construction tasks
         List<FieldTask> fieldTasks = constructionsClient.getTasksByVillageId(villageId);
 
@@ -50,14 +50,13 @@ public class VillageViewBuilderImpl implements VillageViewBuilder{
                 .filter(fieldTask -> !fieldTask.isPaid())
                 .forEach(fieldTask -> subtractResourcesFromWarehouse(villageEntity, fieldTask.getFieldOld().getResourcesToNextLevel()));
 
-        // check weather is field under upgrade if so change status
+        // check whether is Field under upgrade if so change its status
         checkFieldUnderUpgrade(villageEntity, fieldTasks);
 
         // fetch army tasks
         // List<ArmyTask> armyTasks = armyClient.getTasksByVillageId(id);
 
         // combine all tasks together
-        List<TaskExecution> taskExecutions = new ArrayList<>();
         taskExecutions.addAll(fieldTasks);
         // taskExecutions.addAll(armyTasks);
 
