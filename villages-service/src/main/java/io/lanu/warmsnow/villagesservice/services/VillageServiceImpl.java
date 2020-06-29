@@ -2,7 +2,6 @@ package io.lanu.warmsnow.villagesservice.services;
 
 import io.lanu.warmsnow.common_models.FieldType;
 import io.lanu.warmsnow.common_models.models.Field;
-import io.lanu.warmsnow.common_models.models.FieldTaskModel;
 import io.lanu.warmsnow.common_models.models.Warehouse;
 import io.lanu.warmsnow.common_models.requests.FieldUpgradeRequest;
 import io.lanu.warmsnow.common_models.requests.NewVillageRequest;
@@ -21,8 +20,10 @@ import java.math.BigDecimal;
 import java.math.MathContext;
 import java.time.Duration;
 import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -62,53 +63,41 @@ public class VillageServiceImpl implements VillageService {
         // fetch construction tasks
         List<FieldTask> fieldTasks = constructionsClient.getTasksByVillageId(id);
 
+        // if the task hasn't payed, subtract goods from the Warehouse
+        fieldTasks.stream()
+                .filter(fieldTask -> !fieldTask.isPaid())
+                .forEach(fieldTask -> subtractResourcesFromWarehouse(villageEntity, fieldTask.getFieldOld().getResourcesToNextLevel()));
+
         // check weather is field under upgrade if so change status
-        fieldTasks.forEach(fieldTask -> {
-            Field f = villageEntity.getFields().get(fieldTask.getField().getPosition());
-            f.setUnderUpgrade(true);
-        });
+        checkFieldUnderUpgrade(villageEntity, fieldTasks);
 
         // fetch army tasks
         // List<ArmyTask> armyTasks = armyClient.getTasksByVillageId(id);
 
-        // combine all tasks
-
+        // combine all tasks together
         List<TaskExecution> taskExecutions = new ArrayList<>();
         taskExecutions.addAll(fieldTasks);
         // taskExecutions.addAll(armyTasks);
 
         calculateProducedGoods(villageEntity, taskExecutions);
         checkFieldsUpgradable(villageEntity);
-        recalculateTasksTimeLeft(villageEntity);
 
         // save VillageEntity after all counting
         villageRepository.save(villageEntity);
         return MAPPER.map(villageEntity, VillageDto.class);
     }
 
-    @Override
-    public void scheduleFieldUpgrade(FieldUpgradeRequest request) {
-        // get the village for upgrade
-        VillageEntity villageEntity = villageRepository.findById(request.getVillageId()).orElseThrow();
-        // get the field for upgrade in that village
-        Field field = villageEntity.getFields().get(request.getField().getPosition());
-        field.setUnderUpgrade(true);
-        // subtract needed resources for upgrade the Field
+    private void subtractResourcesFromWarehouse(VillageEntity villageEntity, Map<FieldType, BigDecimal> resourcesToNextLevel) {
         Warehouse warehouse = villageEntity.getWarehouse();
-        subtractResourcesFromWarehouse(warehouse, field.getResourcesToNextLevel());
-        //schedule the task
-        FieldTaskModel task = new FieldTaskModel(UUID.randomUUID().toString(),
-                LocalDateTime.now().plus(field.getTimeToNextLevel(), ChronoUnit.SECONDS), field.getFieldType(),
-                field.getPosition(), field.getLevel() + 1, field.getTimeToNextLevel());
-        villageEntity.getTasks().add(task);
-        log.info("Field upgrade scheduled.");
-        // save the village to DB
-        villageRepository.save(villageEntity);
+        warehouse.getGoods()
+                .forEach((k, v) -> warehouse.getGoods().put(k, warehouse.getGoods().get(k).subtract(resourcesToNextLevel.get(k))));
     }
 
-    private void recalculateTasksTimeLeft(VillageEntity villageEntity) {
-        villageEntity.getTasks().forEach(taskModel ->
-                taskModel.setTimeLeft(ChronoUnit.SECONDS.between(LocalDateTime.now(), taskModel.getExecution())));
+    private void checkFieldUnderUpgrade(VillageEntity villageEntity, List<FieldTask> fieldTasks) {
+        fieldTasks.forEach(fieldTask -> {
+            Field f = villageEntity.getFields().get(fieldTask.getFieldNew().getPosition());
+            f.setUnderUpgrade(true);
+        });
     }
 
     private void checkFieldsUpgradable(VillageEntity villageEntity) {
@@ -179,30 +168,4 @@ public class VillageServiceImpl implements VillageService {
 
         log.info("Produced resources added to the Warehouse.");
     }
-
-    private void subtractResourcesFromWarehouse(Warehouse warehouse, Map<FieldType, BigDecimal> resourcesToNextLevel) {
-        warehouse.getGoods()
-                .forEach((k, v) -> warehouse.getGoods().put(k, warehouse.getGoods().get(k).subtract(resourcesToNextLevel.get(k))));
-    }
-
-    /*private void upgradeField(VillageEntity villageEntity, FieldTaskModel fieldTaskModel) {
-        // get new field from Templates service
-        FieldDto upgradedFieldTemplate = templatesFeignClient
-                .getFieldByLevelAndType(fieldTaskModel.getLevel(), fieldTaskModel.getFieldType());
-        upgradedFieldTemplate.setPosition(fieldTaskModel.getPosition());
-        Field upgradedField = MAPPER.map(upgradedFieldTemplate, Field.class);
-        // calculate difference in production for addToProducePerHour method
-        Field previousField = villageEntity.getFields().get(fieldTaskModel.getPosition());
-        int differenceProduction = upgradedField.getProductivity() - previousField.getProductivity();
-        // set new field to the village
-        villageEntity.getFields().set(upgradedField.getPosition(), upgradedField);
-        // add to ProducePerHour
-        addToProducePerHour(villageEntity, upgradedField.getFieldType(), differenceProduction);
-    }*/
-
-    /*private void addToProducePerHour(VillageEntity villageEntity, FieldType fieldType, Integer amount){
-        Map<FieldType, Integer> previous = villageEntity.getProducePerHour().getGoods();
-        // add or subtract amount
-        villageEntity.getProducePerHour().getGoods().put(fieldType, previous.get(fieldType) + amount);
-    }*/
 }

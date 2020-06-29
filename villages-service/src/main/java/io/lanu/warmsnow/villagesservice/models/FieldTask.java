@@ -17,14 +17,16 @@ public class FieldTask implements TaskExecution {
 
     private String taskId;
     private String villageId;
-    private Field field;
+    private Field fieldOld;
+    private Field fieldNew;
     private LocalDateTime executionTime;
+    private boolean paid;
 
     @Override
     public void executeTask(VillageEntity villageEntity) {
         // upgrade the Field
-        field.setUnderUpgrade(false);
-        villageEntity.getFields().set(field.getPosition(), field);
+        fieldNew.setUnderUpgrade(false);
+        villageEntity.getFields().set(fieldNew.getPosition(), fieldNew);
         // recalculate production per hour
         Map<FieldType, Integer> productionPerHour = villageEntity.getFields()
                 .stream()

@@ -12,6 +12,9 @@ import java.time.LocalDateTime;
 public class FieldTaskDto {
     private String taskId;
     private String villageId;
-    private Field field;
+    private Field fieldOld;
+    private Field fieldNew;
     private LocalDateTime executionTime;
+    private long secondsLeft;
+    private boolean paid;
 }

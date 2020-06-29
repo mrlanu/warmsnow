@@ -18,12 +18,17 @@ public class FieldTaskEntity {
     @Id
     private String taskId;
     private String villageId;
-    private Field field;
+    private Field fieldOld;
+    private Field fieldNew;
     private LocalDateTime executionTime;
+    private long secondsLeft;
+    private boolean paid;
 
-    public FieldTaskEntity(String villageId, Field field, LocalDateTime executionTime) {
+    public FieldTaskEntity(String villageId, Field fieldOld, Field fieldNew, LocalDateTime executionTime, long secondsLeft) {
         this.villageId = villageId;
-        this.field = field;
+        this.fieldOld = fieldOld;
+        this.fieldNew = fieldNew;
         this.executionTime = executionTime;
+        this.secondsLeft = secondsLeft;
     }
 }

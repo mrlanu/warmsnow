@@ -2,7 +2,6 @@ package io.lanu.warmsnow.templates.templates_server.entities;
 
 import io.lanu.warmsnow.common_models.VillageType;
 import io.lanu.warmsnow.common_models.models.Field;
-import io.lanu.warmsnow.common_models.models.FieldTaskModel;
 import io.lanu.warmsnow.common_models.models.ProducePerHour;
 import io.lanu.warmsnow.common_models.models.Warehouse;
 import lombok.Data;
@@ -10,7 +9,6 @@ import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.TypeAlias;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -28,7 +26,6 @@ public class VillageTemplateEntity {
     private Warehouse warehouse;
     private ProducePerHour producePerHour;
     private List<Field> fields;
-    private List<FieldTaskModel> tasks;
     // private List<Building> buildings;
 
 
@@ -41,6 +38,5 @@ public class VillageTemplateEntity {
         this.y = 0;
         this.population = 10;
         this.culture =100;
-        this.tasks = new ArrayList<>();
     }
 }

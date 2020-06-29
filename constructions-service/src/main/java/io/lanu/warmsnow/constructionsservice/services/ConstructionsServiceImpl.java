@@ -32,26 +32,44 @@ public class ConstructionsServiceImpl implements ConstructionsService {
         // fetch template and increment one level
         FieldDto upgradedFieldDto = templateServiceClient.
                 getFieldByLevelAndType(request.getField().getLevel() + 1, request.getField().getFieldType());
+        upgradedFieldDto.setPosition(request.getField().getPosition());
 
         // map FieldDto to Field
         Field upgradedField = MAPPER.
                 map(upgradedFieldDto, Field.class);
 
         // new entity, execution time from the request
-        FieldTaskEntity fieldTaskEntity = new FieldTaskEntity(request.getVillageId(), upgradedField,
-                LocalDateTime.now().plus(request.getField().getTimeToNextLevel(), ChronoUnit.SECONDS));
+        FieldTaskEntity fieldTaskEntity = new FieldTaskEntity(request.getVillageId(), request.getField(), upgradedField,
+                LocalDateTime.now().plus(request.getField().getTimeToNextLevel(), ChronoUnit.SECONDS),
+                request.getField().getTimeToNextLevel());
 
         constructionsRepository.save(fieldTaskEntity);
     }
 
     @Override
     public List<FieldTaskDto> getAllTasksByVillageId(String villageId) {
-        List<FieldTaskDto> result = constructionsRepository.findAllByVillageId(villageId)
+        List<FieldTaskEntity> taskEntities = constructionsRepository.findAllByVillageId(villageId);
+        List<FieldTaskDto> result = taskEntities
                 .stream()
-                .map(village -> MAPPER.map(village, FieldTaskDto.class))
+                .map(fieldTaskEntity -> MAPPER.map(fieldTaskEntity, FieldTaskDto.class))
+                .peek(this::recalculateTasksTimeLeft)
                 .collect(Collectors.toList());
+
+        // when is getting tasks for first time all of them should be paid after return to village-service
+        // village-service will take care about that
+        List<FieldTaskEntity> afterReturn = taskEntities
+                .stream()
+                .filter(fieldTaskDto -> !fieldTaskDto.isPaid())
+                .peek(fieldTaskDto -> fieldTaskDto.setPaid(true))
+                .collect(Collectors.toList());
+        constructionsRepository.saveAll(afterReturn);
+
         // delete all tasks before now
         constructionsRepository.deleteAllByVillageIdAndExecutionTimeBefore(villageId, LocalDateTime.now());
         return result;
+    }
+
+    private void recalculateTasksTimeLeft(FieldTaskDto fieldTaskDto) {
+        fieldTaskDto.setSecondsLeft(ChronoUnit.SECONDS.between(LocalDateTime.now(), fieldTaskDto.getExecutionTime()));
     }
 }

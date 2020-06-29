@@ -3,7 +3,6 @@ package io.lanu.warmsnow.templates.templates_client.dto;
 import io.lanu.warmsnow.common_models.VillageType;
 import io.lanu.warmsnow.common_models.models.Field;
 import io.lanu.warmsnow.common_models.models.ProducePerHour;
-import io.lanu.warmsnow.common_models.models.FieldTaskModel;
 import io.lanu.warmsnow.common_models.models.Warehouse;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -25,5 +24,4 @@ public class VillageDto {
     private Warehouse warehouse;
     private ProducePerHour producePerHour;
     private List<Field> fields;
-    private List<FieldTaskModel> tasks;
 }
