@@ -9,4 +9,5 @@ import java.util.List;
 public interface ArmiesService {
     List<ArmyOrderEntity> getAllOrdersByVillageId(String villageId);
     ArmyOrderEntity orderUnits(ArmyOrderRequest armyOrderRequest);
+    List<TroopTaskDto> getTroopTasksFromOrders(String villageId);
 }

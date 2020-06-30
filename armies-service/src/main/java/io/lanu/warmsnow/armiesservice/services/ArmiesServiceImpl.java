@@ -4,6 +4,7 @@ import io.lanu.warmsnow.armiesservice.clients.TemplatesServiceFeignClient;
 import io.lanu.warmsnow.armiesservice.entities.ArmyOrderEntity;
 import io.lanu.warmsnow.armiesservice.models.ArmyOrderRequest;
 import io.lanu.warmsnow.armiesservice.repositories.ArmyOrdersRepository;
+import io.lanu.warmsnow.common_models.UnitType;
 import io.lanu.warmsnow.common_models.dto.TroopTaskDto;
 import io.lanu.warmsnow.templates.templates_client.dto.UnitDto;
 import org.springframework.stereotype.Service;
@@ -29,6 +30,7 @@ public class ArmiesServiceImpl implements ArmiesService {
 
     @Override
     public ArmyOrderEntity orderUnits(ArmyOrderRequest armyOrderRequest) {
+        LocalDateTime test = LocalDateTime.now();
         UnitDto template = feignClient.getUnitByType(armyOrderRequest.getUnitType());
         List<ArmyOrderEntity> ordersList = getAllOrdersByVillageId(armyOrderRequest.getVillageId());
 
@@ -52,8 +54,8 @@ public class ArmiesServiceImpl implements ArmiesService {
                 .collect(Collectors.toList());
     }
 
-
-    private List<TroopTaskDto> calculateReadyTroops(String villageId) {
+    @Override
+    public List<TroopTaskDto> getTroopTasksFromOrders(String villageId) {
         List<TroopTaskDto> result = new ArrayList<>();
         LocalDateTime now = LocalDateTime.now();
         List<ArmyOrderEntity> ordersList = getAllOrdersByVillageId(villageId);
@@ -72,10 +74,10 @@ public class ArmiesServiceImpl implements ArmiesService {
                 int completedTroops = (int) (duration / order.getDurationEach());
 
                 if (completedTroops > 0) {
-                    order.setLeftTrain(order.getLeftTrain() - completedTroops);
-                    order.setLastTime(order.getLastTime().plus(completedTroops * order.getDurationEach(), ChronoUnit.SECONDS));
                     // add completed troops from order to result list
                     result.addAll(addCompletedTroops(order, completedTroops));
+                    order.setLeftTrain(order.getLeftTrain() - completedTroops);
+                    order.setLastTime(order.getLastTime().plus(completedTroops * order.getDurationEach(), ChronoUnit.SECONDS));
                     armyOrdersRepository.save(order);
                 }
             }
@@ -88,6 +90,7 @@ public class ArmiesServiceImpl implements ArmiesService {
         LocalDateTime exec = order.getLastTime();
         for (int i = 0; i < amount; i++) {
             exec = exec.plus(order.getDurationEach(), ChronoUnit.SECONDS);
+            UnitType unitType = order.getUnitType();
             result.add(new TroopTaskDto(order.getVillageId(), order.getUnitType(), exec));
         }
         return result;

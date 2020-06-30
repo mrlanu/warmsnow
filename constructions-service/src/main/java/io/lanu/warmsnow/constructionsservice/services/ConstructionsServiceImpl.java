@@ -34,7 +34,7 @@ public class ConstructionsServiceImpl implements ConstructionsService {
                 getFieldByLevelAndType(request.getField().getLevel() + 1, request.getField().getFieldType());
         upgradedFieldDto.setPosition(request.getField().getPosition());
 
-        // map FieldDto to Field
+        // map FieldDto to Fiel
         Field upgradedField = MAPPER.
                 map(upgradedFieldDto, Field.class);
 

@@ -4,10 +4,12 @@ import io.lanu.warmsnow.common_models.FieldType;
 import io.lanu.warmsnow.common_models.models.Field;
 import io.lanu.warmsnow.common_models.models.Warehouse;
 import io.lanu.warmsnow.templates.templates_client.dto.VillageDto;
+import io.lanu.warmsnow.villagesservice.clients.ArmiesServiceFeignClient;
 import io.lanu.warmsnow.villagesservice.clients.ConstructionsServiceFeignClient;
 import io.lanu.warmsnow.villagesservice.entities.VillageEntity;
 import io.lanu.warmsnow.villagesservice.models.FieldTask;
 import io.lanu.warmsnow.villagesservice.models.TaskExecution;
+import io.lanu.warmsnow.villagesservice.models.TroopTask;
 import io.lanu.warmsnow.villagesservice.repositories.VillageRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
@@ -29,12 +31,15 @@ public class VillageViewBuilderImpl implements VillageViewBuilder{
 
     private final VillageRepository villageRepository;
     private final ConstructionsServiceFeignClient constructionsClient;
+    private final ArmiesServiceFeignClient armiesClient;
 
     private final ModelMapper MAPPER = new ModelMapper();
 
-    public VillageViewBuilderImpl(VillageRepository villageRepository, ConstructionsServiceFeignClient constructionsClient) {
+    public VillageViewBuilderImpl(VillageRepository villageRepository, ConstructionsServiceFeignClient constructionsClient,
+                                  ArmiesServiceFeignClient armiesClient) {
         this.villageRepository = villageRepository;
         this.constructionsClient = constructionsClient;
+        this.armiesClient = armiesClient;
     }
 
     @Override
@@ -45,6 +50,9 @@ public class VillageViewBuilderImpl implements VillageViewBuilder{
         // fetch construction tasks
         List<FieldTask> fieldTasks = constructionsClient.getTasksByVillageId(villageId);
 
+        // fetch army tasks
+        List<TroopTask> armyTasks = armiesClient.getTasksByVillageId(villageId);
+
         // if the task hasn't payed, subtract goods from the Warehouse
         fieldTasks.stream()
                 .filter(fieldTask -> !fieldTask.isPaid())
@@ -53,12 +61,9 @@ public class VillageViewBuilderImpl implements VillageViewBuilder{
         // check whether is Field under upgrade if so change its status
         checkFieldUnderUpgrade(villageEntity, fieldTasks);
 
-        // fetch army tasks
-        // List<ArmyTask> armyTasks = armyClient.getTasksByVillageId(id);
-
         // combine all tasks together
         taskExecutions.addAll(fieldTasks);
-        // taskExecutions.addAll(armyTasks);
+        taskExecutions.addAll(armyTasks);
 
         calculateProducedGoods(villageEntity, taskExecutions);
         checkFieldsUpgradable(villageEntity);
