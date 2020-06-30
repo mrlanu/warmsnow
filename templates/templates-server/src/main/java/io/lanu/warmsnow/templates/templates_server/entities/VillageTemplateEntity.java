@@ -1,6 +1,7 @@
 package io.lanu.warmsnow.templates.templates_server.entities;
 
 import io.lanu.warmsnow.common_models.VillageType;
+import io.lanu.warmsnow.common_models.models.Army;
 import io.lanu.warmsnow.common_models.models.Field;
 import io.lanu.warmsnow.common_models.models.ProducePerHour;
 import io.lanu.warmsnow.common_models.models.Warehouse;
@@ -24,6 +25,7 @@ public class VillageTemplateEntity {
     private Integer population;
     private VillageType villageType;
     private Warehouse warehouse;
+    private Army army;
     private ProducePerHour producePerHour;
     private List<Field> fields;
     // private List<Building> buildings;
@@ -32,6 +34,7 @@ public class VillageTemplateEntity {
     public VillageTemplateEntity(VillageType villageType, List<Field> fields) {
         this.villageType = villageType;
         this.warehouse = new Warehouse();
+        this.army = new Army();
         this.producePerHour = new ProducePerHour();
         this.fields = fields;
         this.x = 0;

@@ -30,7 +30,6 @@ public class ArmiesServiceImpl implements ArmiesService {
 
     @Override
     public ArmyOrderEntity orderUnits(ArmyOrderRequest armyOrderRequest) {
-        LocalDateTime test = LocalDateTime.now();
         UnitDto template = feignClient.getUnitByType(armyOrderRequest.getUnitType());
         List<ArmyOrderEntity> ordersList = getAllOrdersByVillageId(armyOrderRequest.getVillageId());
 
@@ -40,7 +39,7 @@ public class ArmiesServiceImpl implements ArmiesService {
                 armyOrderRequest.getAmount() * template.getBaseProductionTime(), ChronoUnit.SECONDS);
 
         ArmyOrderEntity armyOrder = new ArmyOrderEntity(armyOrderRequest.getVillageId(), lastTime, armyOrderRequest.getUnitType(),
-                armyOrderRequest.getAmount(), template.getBaseProductionTime(), endOrderTime);
+                armyOrderRequest.getAmount(), template.getBaseProductionTime(), template.getEatHour(), endOrderTime);
 
         return armyOrdersRepository.save(armyOrder);
     }
@@ -91,7 +90,7 @@ public class ArmiesServiceImpl implements ArmiesService {
         for (int i = 0; i < amount; i++) {
             exec = exec.plus(order.getDurationEach(), ChronoUnit.SECONDS);
             UnitType unitType = order.getUnitType();
-            result.add(new TroopTaskDto(order.getVillageId(), order.getUnitType(), exec));
+            result.add(new TroopTaskDto(order.getVillageId(), order.getUnitType(), order.getEatHour(), exec));
         }
         return result;
     }

@@ -11,11 +11,13 @@ import java.time.LocalDateTime;
 public class TroopTaskDto {
     private String villageId;
     private UnitType unitType;
+    private int eatHour;
     private LocalDateTime executionTime;
 
-    public TroopTaskDto(String villageId, UnitType unitType, LocalDateTime executionTime) {
+    public TroopTaskDto(String villageId, UnitType unitType, int eatHour, LocalDateTime executionTime) {
         this.villageId = villageId;
         this.unitType = unitType;
+        this.eatHour = eatHour;
         this.executionTime = executionTime;
     }
 }

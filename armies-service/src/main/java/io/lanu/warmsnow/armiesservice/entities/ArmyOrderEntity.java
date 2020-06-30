@@ -24,15 +24,17 @@ public class ArmyOrderEntity {
     private UnitType unitType;
     private Integer leftTrain;
     private Long durationEach;
+    private int eatHour;
     private LocalDateTime endOrderTime;
 
     public ArmyOrderEntity(String villageId, LocalDateTime lastTime, UnitType unitType,
-                           Integer leftTrain, Long durationEach, LocalDateTime endOrderTime) {
+                           Integer leftTrain, Long durationEach, int eatHour, LocalDateTime endOrderTime) {
         this.villageId = villageId;
         this.lastTime = lastTime;
         this.unitType = unitType;
         this.leftTrain = leftTrain;
         this.durationEach = durationEach;
+        this.eatHour = eatHour;
         this.endOrderTime = endOrderTime;
     }
 }

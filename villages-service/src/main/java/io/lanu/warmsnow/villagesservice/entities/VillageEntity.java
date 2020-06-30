@@ -1,6 +1,7 @@
 package io.lanu.warmsnow.villagesservice.entities;
 
 import io.lanu.warmsnow.common_models.VillageType;
+import io.lanu.warmsnow.common_models.models.Army;
 import io.lanu.warmsnow.common_models.models.Field;
 import io.lanu.warmsnow.common_models.models.ProducePerHour;
 import io.lanu.warmsnow.common_models.models.Warehouse;
@@ -28,21 +29,9 @@ public class VillageEntity {
     private Integer population;
     private VillageType villageType;
     private Warehouse warehouse;
+    private Army army;
     private ProducePerHour producePerHour;
     private List<Field> fields;
     @LastModifiedDate
     private LocalDateTime modified;
-
-    public VillageEntity(String accountId, Integer x, Integer y, Integer culture, Integer population,
-                         VillageType villageType, Warehouse warehouse, ProducePerHour producePerHour, List<Field> fields) {
-        this.accountId = accountId;
-        this.x = x;
-        this.y = y;
-        this.culture = culture;
-        this.population = population;
-        this.villageType = villageType;
-        this.warehouse = warehouse;
-        this.producePerHour = producePerHour;
-        this.fields = fields;
-    }
 }
