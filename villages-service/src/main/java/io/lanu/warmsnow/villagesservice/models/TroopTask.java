@@ -22,7 +22,6 @@ public class TroopTask implements TaskExecution {
     public void executeTask(VillageEntity villageEntity) {
         Map<UnitType, Integer> army = villageEntity.getArmy().getHomeLegion();
         army.put(unitType, army.getOrDefault(unitType, 0) + 1);
-        Integer previousCrop = villageEntity.getProducePerHour().getGoods().get(FieldType.CROP);
-        villageEntity.getProducePerHour().getGoods().put(FieldType.CROP, previousCrop - eatHour);
+        villageEntity.addToProducePerHour(FieldType.CROP, -eatHour);
     }
 }

@@ -1,5 +1,6 @@
 package io.lanu.warmsnow.villagesservice.entities;
 
+import io.lanu.warmsnow.common_models.FieldType;
 import io.lanu.warmsnow.common_models.VillageType;
 import io.lanu.warmsnow.common_models.models.Army;
 import io.lanu.warmsnow.common_models.models.Field;
@@ -34,4 +35,9 @@ public class VillageEntity {
     private List<Field> fields;
     @LastModifiedDate
     private LocalDateTime modified;
+
+    public void addToProducePerHour(FieldType fieldType, int amount){
+        Integer previous = producePerHour.getGoods().get(fieldType);
+        producePerHour.getGoods().put(fieldType, previous + amount);
+    }
 }

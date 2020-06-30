@@ -28,11 +28,12 @@ public class FieldTask implements TaskExecution {
         fieldNew.setUnderUpgrade(false);
         villageEntity.getFields().set(fieldNew.getPosition(), fieldNew);
         // recalculate production per hour
-        Map<FieldType, Integer> productionPerHour = villageEntity.getFields()
+        /*Map<FieldType, Integer> productionPerHour = villageEntity.getFields()
                 .stream()
                 .collect(Collectors.groupingBy(Field::getFieldType,
-                        Collectors.summingInt(Field::getProductivity)));
+                        Collectors.summingInt(Field::getProductivity)));*/
         // set production to village
-        villageEntity.getProducePerHour().setGoods(productionPerHour);
+        /*villageEntity.getProducePerHour().setGoods(productionPerHour);*/
+        villageEntity.addToProducePerHour(fieldNew.getFieldType(), fieldNew.getProductivity() - fieldOld.getProductivity());
     }
 }
