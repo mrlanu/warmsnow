@@ -1,29 +1,24 @@
-package io.lanu.warmsnow.villagesservice.models;
+package io.lanu.warmsnow.villagesservice.models.tasks;
 
-import io.lanu.warmsnow.common_models.FieldType;
 import io.lanu.warmsnow.common_models.models.Field;
 import io.lanu.warmsnow.villagesservice.entities.VillageEntity;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
-import java.util.Map;
-import java.util.stream.Collectors;
 
-
+@EqualsAndHashCode(callSuper = true)
 @Data
 @NoArgsConstructor
-public class FieldTask implements TaskExecution {
+public class FieldTask extends BaseTask {
 
-    private String taskId;
     private String villageId;
     private Field fieldOld;
     private Field fieldNew;
-    private LocalDateTime executionTime;
     private boolean paid;
 
     @Override
-    public void executeTask(VillageEntity villageEntity) {
+    public void performActions(VillageEntity villageEntity) {
         // upgrade the Field
         fieldNew.setUnderUpgrade(false);
         villageEntity.getFields().set(fieldNew.getPosition(), fieldNew);

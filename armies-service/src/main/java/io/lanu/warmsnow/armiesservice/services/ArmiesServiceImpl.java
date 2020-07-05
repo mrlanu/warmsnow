@@ -89,7 +89,6 @@ public class ArmiesServiceImpl implements ArmiesService {
         LocalDateTime exec = order.getLastTime();
         for (int i = 0; i < amount; i++) {
             exec = exec.plus(order.getDurationEach(), ChronoUnit.SECONDS);
-            UnitType unitType = order.getUnitType();
             result.add(new TroopTaskDto(order.getVillageId(), order.getUnitType(), order.getEatHour(), exec));
         }
         return result;

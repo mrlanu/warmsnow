@@ -7,9 +7,7 @@ import io.lanu.warmsnow.templates.templates_client.dto.VillageDto;
 import io.lanu.warmsnow.villagesservice.clients.ArmiesServiceFeignClient;
 import io.lanu.warmsnow.villagesservice.clients.ConstructionsServiceFeignClient;
 import io.lanu.warmsnow.villagesservice.entities.VillageEntity;
-import io.lanu.warmsnow.villagesservice.models.FieldTask;
-import io.lanu.warmsnow.villagesservice.models.TaskExecution;
-import io.lanu.warmsnow.villagesservice.models.TroopTask;
+import io.lanu.warmsnow.villagesservice.models.tasks.*;
 import io.lanu.warmsnow.villagesservice.repositories.VillageRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
@@ -19,6 +17,7 @@ import java.math.BigDecimal;
 import java.math.MathContext;
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -44,14 +43,18 @@ public class VillageViewBuilderImpl implements VillageViewBuilder{
 
     @Override
     public VillageDto build(String villageId) {
-        List<TaskExecution> taskExecutions = new ArrayList<>();
+        List<BaseTask> tasksList = new ArrayList<>();
         // fetch the Village
         VillageEntity villageEntity = villageRepository.findById(villageId).orElseThrow();
         // fetch construction tasks
         List<FieldTask> fieldTasks = constructionsClient.getTasksByVillageId(villageId);
-
         // fetch army tasks
         List<TroopTask> armyTasks = armiesClient.getTasksByVillageId(villageId);
+
+        // combine all tasks together
+        tasksList.addAll(fieldTasks);
+        tasksList.addAll(armyTasks);
+        tasksList.add(new LastTask(LocalDateTime.now()));
 
         // if the task hasn't payed, subtract goods from the Warehouse
         fieldTasks.stream()
@@ -61,11 +64,8 @@ public class VillageViewBuilderImpl implements VillageViewBuilder{
         // check whether is Field under upgrade if so change its status
         checkFieldUnderUpgrade(villageEntity, fieldTasks);
 
-        // combine all tasks together
-        taskExecutions.addAll(fieldTasks);
-        taskExecutions.addAll(armyTasks);
+        executeAllTasks(villageEntity, tasksList);
 
-        calculateProducedGoods(villageEntity, taskExecutions);
         checkFieldsUpgradable(villageEntity);
 
         // save VillageEntity after all counting
@@ -104,33 +104,44 @@ public class VillageViewBuilderImpl implements VillageViewBuilder{
         return true;
     }
 
-    private void calculateProducedGoods(VillageEntity villageEntity, List<TaskExecution> taskExecution) {
+    private void executeAllTasks(VillageEntity villageEntity, List<BaseTask> tasks) {
         // filter all tasks that the village has with time before now
-        List<TaskExecution> tasksList = taskExecution
+        List<BaseTask> sortedTasks = tasks
                 .stream()
                 .filter(task -> task.getExecutionTime().isBefore(LocalDateTime.now()))
-                .sorted(Comparator.comparing(TaskExecution::getExecutionTime))
+                .sorted(Comparator.comparing(BaseTask::getExecutionTime))
                 .collect(Collectors.toList());
 
         LocalDateTime modified = villageEntity.getModified();
 
-        // if the village doesnt have any tasks
-        if (tasksList.size() == 0) {
-            calculate(villageEntity, villageEntity.getModified(), LocalDateTime.now());
-        } else { // if the village does any tasks lastModified should be changed every task's completed time
-            // calculate between each task which should be completed before now
-            for (TaskExecution task : tasksList) {
-                // recalculate warehouse leftovers
-                calculate(villageEntity, modified, task.getExecutionTime());
-                modified = task.getExecutionTime();
-                task.executeTask(villageEntity);
+        for (BaseTask t : sortedTasks) {
+            Integer cropPerHour = villageEntity.getProducePerHour().getGoods().get(FieldType.CROP);
+
+            while (cropPerHour < 0) {
+                double leftCrop = villageEntity.getWarehouse().getGoods().get(FieldType.CROP).doubleValue();
+                double durationToDeath = leftCrop / -cropPerHour * 60 * 60 * 1000;
+                long longDurationToDeath = (long) durationToDeath;
+                LocalDateTime deathTime = modified.plus(longDurationToDeath, ChronoUnit.MILLIS);
+
+                if (deathTime.isBefore(t.getExecutionTime())) {
+                    BaseTask deathTask = new DeathTask(deathTime);
+                    calculateProducedGoods(villageEntity, modified, deathTask.getExecutionTime());
+                    deathTask.performActions(villageEntity);
+                    modified = deathTask.getExecutionTime();
+                } else {
+                    break;
+                }
+                cropPerHour = villageEntity.getProducePerHour().getGoods().get(FieldType.CROP);
             }
-            // last calculate between last task and now
-            calculate(villageEntity, modified, LocalDateTime.now());
+
+            // recalculate warehouse leftovers
+            calculateProducedGoods(villageEntity, modified, t.getExecutionTime());
+            t.performActions(villageEntity);
+            modified = t.getExecutionTime();
         }
     }
 
-    private void calculate(VillageEntity villageEntity, LocalDateTime lastModified, LocalDateTime untilTime){
+    private void calculateProducedGoods(VillageEntity villageEntity, LocalDateTime lastModified, LocalDateTime untilTime){
         long durationFromLastModified = Duration
                 .between(lastModified, untilTime).toMillis();
 

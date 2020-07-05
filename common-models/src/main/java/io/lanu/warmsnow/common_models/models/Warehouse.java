@@ -18,4 +18,8 @@ public class Warehouse {
         this.goods.put(FieldType.IRON, BigDecimal.valueOf(750));
         this.goods.put(FieldType.CROP, BigDecimal.valueOf(750));
     }
+
+    public void addGood(FieldType fieldType, BigDecimal amount){
+        goods.put(fieldType, goods.get(fieldType).add(amount));
+    }
 }
