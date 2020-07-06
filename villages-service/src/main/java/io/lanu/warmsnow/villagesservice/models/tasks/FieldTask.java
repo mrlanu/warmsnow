@@ -6,6 +6,8 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
+
 
 @EqualsAndHashCode(callSuper = true)
 @Data
@@ -16,6 +18,14 @@ public class FieldTask extends BaseTask {
     private Field fieldOld;
     private Field fieldNew;
     private boolean paid;
+
+    public FieldTask(LocalDateTime executionTime, String villageId, Field fieldOld, Field fieldNew, boolean paid) {
+        super(executionTime);
+        this.villageId = villageId;
+        this.fieldOld = fieldOld;
+        this.fieldNew = fieldNew;
+        this.paid = paid;
+    }
 
     @Override
     public void performActions(VillageEntity villageEntity) {
