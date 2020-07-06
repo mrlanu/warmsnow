@@ -102,6 +102,11 @@ class VillageViewBuilderImplTest {
         VillageDto villageDto = villageViewBuilder.build("test");
         assertEquals(2, villageDto.getFields().get(0).getLevel());
         assertEquals(2, villageDto.getFields().get(3).getLevel());
+        assertTrue(villageDto.getFields().get(1).isAbleToUpgrade());
+        assertFalse(villageDto.getFields().get(0).isAbleToUpgrade());
+        assertEquals(BigDecimal.valueOf(300.0), villageDto.getWarehouse().getGoods().get(FieldType.CROP));
+        assertEquals(BigDecimal.valueOf(140.0), villageDto.getWarehouse().getGoods().get(FieldType.WOOD));
+        System.out.println(villageDto.getFields());
         System.out.println(villageDto.getWarehouse());
         System.out.println(villageDto.getProducePerHour());
     }

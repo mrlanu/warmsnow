@@ -22,4 +22,12 @@ public class Warehouse {
     public void addGood(FieldType fieldType, BigDecimal amount){
         goods.put(fieldType, goods.get(fieldType).add(amount));
     }
+
+    public void addGoods(Map<FieldType, BigDecimal> resources){
+        goods.forEach((k, v) -> goods.put(k, goods.get(k).add(resources.get(k))));
+    }
+
+    public void subtractGoods(Map<FieldType, BigDecimal> resources){
+        goods.forEach((k, v) -> goods.put(k, goods.get(k).subtract(resources.get(k))));
+    }
 }

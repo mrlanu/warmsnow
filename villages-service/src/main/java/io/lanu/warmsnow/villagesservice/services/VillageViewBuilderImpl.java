@@ -59,24 +59,19 @@ public class VillageViewBuilderImpl implements VillageViewBuilder{
         // if the task hasn't payed, subtract goods from the Warehouse
         fieldTasks.stream()
                 .filter(fieldTask -> !fieldTask.isPaid())
-                .forEach(fieldTask -> subtractResourcesFromWarehouse(villageEntity, fieldTask.getFieldOld().getResourcesToNextLevel()));
+                .forEach(fieldTask -> villageEntity.getWarehouse().subtractGoods(fieldTask.getFieldOld().getResourcesToNextLevel()));
 
         // check whether is Field under upgrade if so change its status
         checkFieldUnderUpgrade(villageEntity, fieldTasks);
 
         executeAllTasks(villageEntity, tasksList);
 
-        checkFieldsUpgradable(villageEntity);
+        // check whether is Field able to upgrade
+        villageEntity.getFields().forEach(field -> field.isUpgradable(villageEntity.getWarehouse()));
 
         // save VillageEntity after all counting
         villageRepository.save(villageEntity);
         return MAPPER.map(villageEntity, VillageDto.class);
-    }
-
-    private void subtractResourcesFromWarehouse(VillageEntity villageEntity, Map<FieldType, BigDecimal> resourcesToNextLevel) {
-        Warehouse warehouse = villageEntity.getWarehouse();
-        warehouse.getGoods()
-                .forEach((k, v) -> warehouse.getGoods().put(k, warehouse.getGoods().get(k).subtract(resourcesToNextLevel.get(k))));
     }
 
     private void checkFieldUnderUpgrade(VillageEntity villageEntity, List<FieldTask> fieldTasks) {
@@ -84,24 +79,6 @@ public class VillageViewBuilderImpl implements VillageViewBuilder{
             Field f = villageEntity.getFields().get(fieldTask.getFieldNew().getPosition());
             f.setUnderUpgrade(true);
         });
-    }
-
-    private void checkFieldsUpgradable(VillageEntity villageEntity) {
-        villageEntity.getFields()
-                .forEach(field -> {
-                    if (compareResources(field.getResourcesToNextLevel(), villageEntity.getWarehouse().getGoods())){
-                        field.setAbleToUpgrade(true);
-                    }else field.setAbleToUpgrade(false);
-                });
-    }
-
-    private boolean compareResources(Map<FieldType, BigDecimal> need, Map<FieldType, BigDecimal> available){
-        for (FieldType key : need.keySet()){
-            if (available.get(key).compareTo(need.get(key)) < 0){
-                return false;
-            }
-        }
-        return true;
     }
 
     private void executeAllTasks(VillageEntity villageEntity, List<BaseTask> tasks) {
@@ -157,11 +134,8 @@ public class VillageViewBuilderImpl implements VillageViewBuilder{
         BigDecimal crop =
                 new BigDecimal((durationFromLastModified * (double) producePerHour.get(FieldType.CROP)) / 3600000L, mc);
 
-        Map<FieldType, BigDecimal> goods = villageEntity.getWarehouse().getGoods();
-        goods.put(FieldType.WOOD, goods.get(FieldType.WOOD).add(wood));
-        goods.put(FieldType.CLAY, goods.get(FieldType.CLAY).add(clay));
-        goods.put(FieldType.IRON, goods.get(FieldType.IRON).add(iron));
-        goods.put(FieldType.CROP, goods.get(FieldType.CROP).add(crop));
+        villageEntity.getWarehouse()
+                .addGoods(Map.of(FieldType.WOOD, wood, FieldType.CLAY, clay, FieldType.IRON, iron, FieldType.CROP, crop));
 
         log.info("Produced resources added to the Warehouse.");
     }
