@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
 import java.util.Map;
 
 @EqualsAndHashCode(callSuper = true)
@@ -17,6 +18,12 @@ public class TroopTask extends BaseTask {
     private String villageId;
     private UnitType unitType;
     private int eatHour;
+
+    public TroopTask(LocalDateTime executionTime, UnitType unitType, int eatHour) {
+        super(executionTime);
+        this.unitType = unitType;
+        this.eatHour = eatHour;
+    }
 
     @Override
     public void performActions(VillageEntity villageEntity) {
