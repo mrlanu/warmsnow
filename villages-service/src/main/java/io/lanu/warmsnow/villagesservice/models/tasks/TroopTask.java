@@ -29,6 +29,6 @@ public class TroopTask extends BaseTask {
     public void performActions(VillageEntity villageEntity) {
         Map<UnitType, Integer> army = villageEntity.getArmy().getHomeLegion();
         army.put(unitType, army.getOrDefault(unitType, 0) + 1);
-        villageEntity.addToProducePerHour(FieldType.CROP, -eatHour);
+        villageEntity.getProducePerHour().addGood(FieldType.CROP, -eatHour);
     }
 }

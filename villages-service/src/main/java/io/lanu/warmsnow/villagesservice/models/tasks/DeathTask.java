@@ -25,6 +25,6 @@ public class DeathTask extends BaseTask {
         Map<UnitType, Integer> army = villageEntity.getArmy().getHomeLegion();
         army.put(UnitType.LEGIONNAIRE, army.getOrDefault(UnitType.LEGIONNAIRE, 0) - 1);
         villageEntity.getWarehouse().addGood(FieldType.CROP, BigDecimal.valueOf(50));
-        villageEntity.addToProducePerHour(FieldType.CROP, 10);
+        villageEntity.getProducePerHour().addGood(FieldType.CROP, 10);
     }
 }

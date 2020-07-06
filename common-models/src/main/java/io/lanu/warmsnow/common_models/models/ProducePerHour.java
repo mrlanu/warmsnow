@@ -17,4 +17,8 @@ public class ProducePerHour {
         this.goods.put(FieldType.IRON, 10);
         this.goods.put(FieldType.CROP, 10);
     }
+
+    public void addGood(FieldType fieldType, int amount){
+        goods.put(fieldType, goods.get(fieldType) + amount);
+    }
 }

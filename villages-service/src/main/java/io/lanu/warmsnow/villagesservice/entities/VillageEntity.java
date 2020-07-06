@@ -35,9 +35,4 @@ public class VillageEntity {
     private List<Field> fields;
     @LastModifiedDate
     private LocalDateTime modified;
-
-    public void addToProducePerHour(FieldType fieldType, int amount){
-        Integer previous = producePerHour.getGoods().get(fieldType);
-        producePerHour.getGoods().put(fieldType, previous + amount);
-    }
 }

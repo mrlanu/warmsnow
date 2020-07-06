@@ -39,6 +39,6 @@ public class FieldTask extends BaseTask {
                         Collectors.summingInt(Field::getProductivity)));*/
         // set production to village
         /*villageEntity.getProducePerHour().setGoods(productionPerHour);*/
-        villageEntity.addToProducePerHour(fieldNew.getFieldType(), fieldNew.getProductivity() - fieldOld.getProductivity());
+        villageEntity.getProducePerHour().addGood(fieldNew.getFieldType(), fieldNew.getProductivity() - fieldOld.getProductivity());
     }
 }
