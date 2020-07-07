@@ -13,10 +13,15 @@ import io.lanu.warmsnow.villagesservice.entities.VillageEntity;
 import io.lanu.warmsnow.villagesservice.models.tasks.FieldTask;
 import io.lanu.warmsnow.villagesservice.models.tasks.TroopTask;
 import io.lanu.warmsnow.villagesservice.repositories.VillageRepository;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
-import org.mockito.ArgumentMatchers;
-import org.mockito.Mockito;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.BDDMockito.then;
+
+import org.mockito.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -24,26 +29,45 @@ import java.util.*;
 
 class VillageViewBuilderImplTest {
 
-    private ArmiesServiceFeignClient armiesClient = Mockito.mock(ArmiesServiceFeignClient.class);
-    private ConstructionsServiceFeignClient constructionClient = Mockito.mock(ConstructionsServiceFeignClient.class);
-    private VillageRepository villageRepository = Mockito.mock(VillageRepository.class);
-    private VillageViewBuilderImpl villageViewBuilder = Mockito
-            .spy(new VillageViewBuilderImpl(villageRepository, constructionClient, armiesClient));
+
+    @Captor
+    private ArgumentCaptor<VillageEntity> villageEntityArgumentCaptor;
+    @Mock
+    private ArmiesServiceFeignClient armiesClient;
+    @Mock
+    private ConstructionsServiceFeignClient constructionClient;
+    @Mock
+    private VillageRepository villageRepository;
+    @InjectMocks
+    private VillageViewBuilderImpl villageViewBuilder;
+
+    @BeforeEach
+    public void init(){
+        MockitoAnnotations.initMocks(this);
+    }
 
     @Test
     void build() {
         LocalDateTime nowTime = LocalDateTime.now().minusHours(12);
         VillageEntity villageEntity = createVillageEntity(nowTime);
-        Mockito.doReturn(Optional.of(villageEntity)).when(this.villageRepository).findById(ArgumentMatchers.any());
+        given(this.villageRepository.findById(ArgumentMatchers.any())).willReturn(Optional.of(villageEntity));
 
         List<FieldTask> fieldTasks = new ArrayList<>();
-        Mockito.doReturn(fieldTasks).when(this.constructionClient).getTasksByVillageId(ArgumentMatchers.any());
+        given(this.constructionClient.getTasksByVillageId(ArgumentMatchers.any())).willReturn(fieldTasks);
+
         List<TroopTask> armyTasks = Arrays.asList(
                 new TroopTask(nowTime.plusHours(1), UnitType.LEGIONNAIRE, 10),
                 new TroopTask(nowTime.plusHours(2), UnitType.LEGIONNAIRE, 10));
-        Mockito.doReturn(armyTasks).when(this.armiesClient).getTasksByVillageId(ArgumentMatchers.any());
+        given(this.armiesClient.getTasksByVillageId(ArgumentMatchers.any())).willReturn(armyTasks);
 
+        // when
         VillageDto villageDto = villageViewBuilder.build("test");
+
+        // then
+        then(villageRepository).should().save(villageEntityArgumentCaptor.capture());
+        VillageEntity villageEntityArgCaptorVal = villageEntityArgumentCaptor.getValue();
+        assertThat(villageEntityArgCaptorVal).isEqualTo(villageEntity);
+
         System.out.println(villageDto.getArmy());
         System.out.println(villageDto.getWarehouse());
         System.out.println(villageDto.getProducePerHour());
@@ -54,9 +78,12 @@ class VillageViewBuilderImplTest {
     void build_ShouldProduceSomeGoods(){
         LocalDateTime nowTime = LocalDateTime.now().minusHours(10);
         VillageEntity villageEntity = createVillageEntity(nowTime);
-        Mockito.doReturn(Optional.of(villageEntity)).when(this.villageRepository).findById(ArgumentMatchers.any());
+        given(this.villageRepository.findById(ArgumentMatchers.any())).willReturn(Optional.of(villageEntity));
 
+        // when
         VillageDto villageDto = villageViewBuilder.build("test");
+
+        // then
         assertEquals(BigDecimal.valueOf(200), villageDto.getWarehouse().getGoods().get(FieldType.CROP));
         assertEquals(BigDecimal.valueOf(200), villageDto.getWarehouse().getGoods().get(FieldType.WOOD));
         assertEquals(BigDecimal.valueOf(200), villageDto.getWarehouse().getGoods().get(FieldType.CLAY));
@@ -69,7 +96,8 @@ class VillageViewBuilderImplTest {
     void build_ShouldUpgradeTwoFields(){
         LocalDateTime nowTime = LocalDateTime.now().minusHours(10);
         VillageEntity villageEntity = createVillageEntity(nowTime);
-        Mockito.doReturn(Optional.of(villageEntity)).when(this.villageRepository).findById(ArgumentMatchers.any());
+        given(this.villageRepository.findById(ArgumentMatchers.any())).willReturn(Optional.of(villageEntity));
+
         Field fieldOldCrop = new Field(3, 1, FieldType.CROP, 10, false,
                 false, 60, Map.of(
                 FieldType.WOOD, BigDecimal.valueOf(50),
@@ -97,9 +125,12 @@ class VillageViewBuilderImplTest {
         List<FieldTask> fieldTasks = Arrays.asList(
                 new FieldTask(nowTime.plusHours(5), "test", fieldOldCrop, fieldNewCrop, false),
                 new FieldTask(nowTime.plusHours(9), "test", fieldOldWood, fieldNewWood, false));
-        Mockito.doReturn(fieldTasks).when(this.constructionClient).getTasksByVillageId(ArgumentMatchers.any());
+        given(this.constructionClient.getTasksByVillageId(ArgumentMatchers.any())).willReturn(fieldTasks);
 
+        // when
         VillageDto villageDto = villageViewBuilder.build("test");
+
+        // then
         assertEquals(2, villageDto.getFields().get(0).getLevel());
         assertEquals(2, villageDto.getFields().get(3).getLevel());
         assertTrue(villageDto.getFields().get(1).isAbleToUpgrade());
