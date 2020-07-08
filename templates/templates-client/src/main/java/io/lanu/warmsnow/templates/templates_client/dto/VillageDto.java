@@ -5,6 +5,7 @@ import io.lanu.warmsnow.common_models.models.Army;
 import io.lanu.warmsnow.common_models.models.Field;
 import io.lanu.warmsnow.common_models.models.ProducePerHour;
 import io.lanu.warmsnow.common_models.models.Warehouse;
+import io.lanu.warmsnow.common_models.models.buildings.BuildingBase;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -26,4 +27,5 @@ public class VillageDto {
     private Army army;
     private ProducePerHour producePerHour;
     private List<Field> fields;
+    private List<BuildingBase> buildings;
 }

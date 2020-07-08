@@ -6,6 +6,7 @@ import io.lanu.warmsnow.common_models.models.Army;
 import io.lanu.warmsnow.common_models.models.Field;
 import io.lanu.warmsnow.common_models.models.ProducePerHour;
 import io.lanu.warmsnow.common_models.models.Warehouse;
+import io.lanu.warmsnow.common_models.models.buildings.BuildingBase;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
@@ -33,6 +34,7 @@ public class VillageEntity {
     private Army army;
     private ProducePerHour producePerHour;
     private List<Field> fields;
+    private List<BuildingBase> buildings;
     @LastModifiedDate
     private LocalDateTime modified;
 }

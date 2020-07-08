@@ -5,6 +5,10 @@ import io.lanu.warmsnow.common_models.NationsType;
 import io.lanu.warmsnow.common_models.UnitType;
 import io.lanu.warmsnow.common_models.VillageType;
 import io.lanu.warmsnow.common_models.models.Field;
+import io.lanu.warmsnow.common_models.models.buildings.Barrack;
+import io.lanu.warmsnow.common_models.models.buildings.BuildingBase;
+import io.lanu.warmsnow.common_models.models.buildings.EmptySpot;
+import io.lanu.warmsnow.common_models.models.buildings.WarehouseBuilding;
 import io.lanu.warmsnow.templates.templates_server.entities.FieldTemplateEntity;
 import io.lanu.warmsnow.templates.templates_server.entities.UnitTemplateEntity;
 import io.lanu.warmsnow.templates.templates_server.entities.VillageTemplateEntity;
@@ -106,7 +110,12 @@ public class TemplatesServerApplication {
                         new Field(3, 1, FieldType.CROP, 10,
                                 false, false, 30, getResourcesToNextLevel(50))
                 );
-                villagesService.save(new VillageTemplateEntity(VillageType.SIX, fields));
+                List<BuildingBase> buildings = Arrays.asList(
+                        new WarehouseBuilding(1, 0, null, 60, 750),
+                        new EmptySpot(0, 1, null, 0),
+                        new Barrack(1, 2, null, 60, 1)
+                );
+                villagesService.save(new VillageTemplateEntity(VillageType.SIX, fields, buildings));
             }
         };
     }
