@@ -3,11 +3,14 @@ package io.lanu.warmsnow.villagesservice.clients;
 
 import io.lanu.warmsnow.common_models.FieldType;
 import io.lanu.warmsnow.common_models.VillageType;
+import io.lanu.warmsnow.common_models.models.buildings.BuildingBase;
 import io.lanu.warmsnow.templates.templates_client.dto.FieldDto;
 import io.lanu.warmsnow.villagesservice.entities.VillageEntity;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+
+import java.util.List;
 
 @FeignClient(name = "templates-server")
 public interface TemplatesServiceFeignClient {
@@ -19,9 +22,10 @@ public interface TemplatesServiceFeignClient {
     FieldDto getFieldByLevelAndType(@PathVariable("fieldLevel") int fieldLevel,
                                     @PathVariable("fieldType") FieldType fieldType);
 
-    /*@GetMapping(value = "/templates/buildings/{buildingId}")
-    BuildingDto getBuilding(@PathVariable("buildingId") String buildingId);
+    @GetMapping(value = "/templates/buildings")
+    List<BuildingBase> getAllBuildings();
 
+    /*
     @PostMapping(value = "/templates/buildings/", consumes = "application/json")
     List<BuildingDto> getAvailableBuildings(@RequestBody WarehouseDto warehouse);*/
 }

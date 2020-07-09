@@ -1,5 +1,6 @@
 package io.lanu.warmsnow.villagesservice.services;
 
+import io.lanu.warmsnow.common_models.models.buildings.BuildingBase;
 import io.lanu.warmsnow.common_models.requests.NewVillageRequest;
 import io.lanu.warmsnow.templates.templates_client.dto.VillageDto;
 import io.lanu.warmsnow.villagesservice.clients.TemplatesServiceFeignClient;
@@ -7,6 +8,8 @@ import io.lanu.warmsnow.villagesservice.entities.VillageEntity;
 import io.lanu.warmsnow.villagesservice.repositories.VillageRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 @Slf4j
@@ -40,5 +43,10 @@ public class VillageServiceImpl implements VillageService {
     @Override
     public VillageDto getVillageById(String villageId) {
        return villageViewBuilder.build(villageId);
+    }
+
+    @Override
+    public List<BuildingBase> getAvailableBuildings(String villageId) {
+        return templatesFeignClient.getAllBuildings();
     }
 }

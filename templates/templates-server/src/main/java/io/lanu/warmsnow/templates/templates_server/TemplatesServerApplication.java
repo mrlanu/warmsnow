@@ -5,13 +5,13 @@ import io.lanu.warmsnow.common_models.NationsType;
 import io.lanu.warmsnow.common_models.UnitType;
 import io.lanu.warmsnow.common_models.VillageType;
 import io.lanu.warmsnow.common_models.models.Field;
-import io.lanu.warmsnow.common_models.models.buildings.Barrack;
-import io.lanu.warmsnow.common_models.models.buildings.BuildingBase;
-import io.lanu.warmsnow.common_models.models.buildings.EmptySpot;
-import io.lanu.warmsnow.common_models.models.buildings.WarehouseBuilding;
+import io.lanu.warmsnow.common_models.models.buildings.*;
 import io.lanu.warmsnow.templates.templates_server.entities.FieldTemplateEntity;
 import io.lanu.warmsnow.templates.templates_server.entities.UnitTemplateEntity;
 import io.lanu.warmsnow.templates.templates_server.entities.VillageTemplateEntity;
+import io.lanu.warmsnow.templates.templates_server.entities.buildings.BarrackTemplateEntity;
+import io.lanu.warmsnow.templates.templates_server.entities.buildings.GranaryTemplateEntity;
+import io.lanu.warmsnow.templates.templates_server.entities.buildings.WarehouseBuildingTemplateEntity;
 import io.lanu.warmsnow.templates.templates_server.services.BuildingsService;
 import io.lanu.warmsnow.templates.templates_server.services.FieldsService;
 import io.lanu.warmsnow.templates.templates_server.services.UnitsService;
@@ -29,45 +29,42 @@ import java.util.*;
 @EnableDiscoveryClient
 public class TemplatesServerApplication {
 
-    private final BuildingsService buildingsService;
     private final VillagesService villagesService;
     private final FieldsService fieldsService;
     private final UnitsService unitsService;
+    private final BuildingsService buildingsService;
 
-    public TemplatesServerApplication(BuildingsService buildingsService,
-                                      VillagesService villagesService, FieldsService fieldsService, UnitsService unitsService) {
-        this.buildingsService = buildingsService;
+    public TemplatesServerApplication(VillagesService villagesService, FieldsService fieldsService,
+                                      UnitsService unitsService, BuildingsService buildingsService) {
         this.villagesService = villagesService;
         this.fieldsService = fieldsService;
         this.unitsService = unitsService;
+        this.buildingsService = buildingsService;
     }
 
     public static void main(String[] args) {
         SpringApplication.run(TemplatesServerApplication.class, args);
     }
 
-    /*@Bean
+    @Bean
     public CommandLineRunner createSomeBuildingsTemplates() {
         return args -> {
-            if (buildingsService.findAll().size() == 0){
-                Map<Integer, Integer> produces = new HashMap<>();
-                Map<String, Integer> constCost = new HashMap<>();
-                produces.put(5, 7);
-                produces.put(15, 14);
-                produces.put(1, 34);
-                produces.put(4, 56);
-                produces.put(8, 84);
-                produces.put(24, 169);
-                constCost.put("coins", 96);
-                BuildingEntity hunter = new BuildingEntity(null,
-                        "hunter", 28, constCost, 10000, produces, false);
-                BuildingEntity blacksmith = new BuildingEntity(null,
-                        "blacksmith", 12, constCost, 30000, produces, false);
-                buildingsService.save(hunter);
-                buildingsService.save(blacksmith);
+            if (buildingsService.getAllBuildings().size() == 0){
+                Map<FieldType, Integer> toNextLevel = Map.of(
+                        FieldType.WOOD, 200,
+                        FieldType.CLAY, 200,
+                        FieldType.IRON, 200,
+                        FieldType.CROP, 200);
+                WarehouseBuildingTemplateEntity warehouse =
+                        new WarehouseBuildingTemplateEntity(1, 0, toNextLevel, 60, 750);
+                BarrackTemplateEntity barrack =
+                        new BarrackTemplateEntity(1, 0, toNextLevel, 60, 1);
+                GranaryTemplateEntity granary =
+                        new GranaryTemplateEntity(1, 0, toNextLevel, 60, 750);
+                buildingsService.saveAll(Arrays.asList(warehouse, barrack, granary));
             }
         };
-    }*/
+    }
 
     @Bean
     public CommandLineRunner createSomeFieldsTemplates() {
@@ -111,9 +108,11 @@ public class TemplatesServerApplication {
                                 false, false, 30, getResourcesToNextLevel(50))
                 );
                 List<BuildingBase> buildings = Arrays.asList(
-                        new WarehouseBuilding(1, 0, null, 60, 750),
-                        new EmptySpot(0, 1, null, 0),
-                        new Barrack(1, 2, null, 60, 1)
+                        new EmptySpot(0, 0, null, 0),
+                        new MainBuilding(1, 1, Map.of(FieldType.WOOD, 200, FieldType.CLAY, 200,
+                                FieldType.IRON, 200, FieldType.CROP, 200), 60, 2),
+                        new EmptySpot(0, 2, null, 0),
+                        new EmptySpot(0, 3, null, 0)
                 );
                 villagesService.save(new VillageTemplateEntity(VillageType.SIX, fields, buildings));
             }

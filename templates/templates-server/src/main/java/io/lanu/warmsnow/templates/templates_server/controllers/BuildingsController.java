@@ -1,11 +1,10 @@
 package io.lanu.warmsnow.templates.templates_server.controllers;
 
-
-import io.lanu.warmsnow.templates.templates_client.dto.BuildingDto;
-import io.lanu.warmsnow.templates.templates_client.dto.WarehouseDto;
-import io.lanu.warmsnow.templates.templates_server.entities.BuildingEntity;
+import io.lanu.warmsnow.templates.templates_server.entities.buildings.BuildingBaseTemplateEntity;
 import io.lanu.warmsnow.templates.templates_server.services.BuildingsService;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
@@ -13,20 +12,14 @@ import java.util.List;
 @RequestMapping("/buildings")
 public class BuildingsController {
 
-    private BuildingsService buildingsService;
+    private final BuildingsService buildingsService;
 
     public BuildingsController(BuildingsService buildingsService) {
         this.buildingsService = buildingsService;
     }
 
-    @PostMapping
-    public List<BuildingDto> getAllAvailable(@RequestBody WarehouseDto warehouseDto){
-        return buildingsService.getAllAvailable(warehouseDto);
+    @GetMapping
+    public List<BuildingBaseTemplateEntity> getAllBuildings(){
+        return buildingsService.getAllBuildings();
     }
-
-    @GetMapping("/{buildingId}")
-    public BuildingEntity getBuildingById(@PathVariable  String buildingId){
-        return buildingsService.findById(buildingId).orElseThrow(RuntimeException::new);
-    }
-
 }

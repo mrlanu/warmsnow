@@ -16,6 +16,7 @@ import java.util.Map;
         @JsonSubTypes.Type(value = Granary.class, name= "granary"),
         @JsonSubTypes.Type(value = EmptySpot.class, name= "empty-spot"),
         @JsonSubTypes.Type(value = Barrack.class, name= "barrack"),
+        @JsonSubTypes.Type(value = MainBuilding.class, name= "main-building")
 })
 public abstract class BuildingBase {
     private String buildingType;
@@ -23,6 +24,8 @@ public abstract class BuildingBase {
     private int position;
     private Map<FieldType, Integer> resourcesToNextLevel;
     private long timeToNextLevel;
+    private boolean underUpgrade;
+    private boolean ableToUpgrade;
 
     public BuildingBase(String buildingType, int level, int position, Map<FieldType, Integer> resourcesToNextLevel,
                         long timeToNextLevel) {
