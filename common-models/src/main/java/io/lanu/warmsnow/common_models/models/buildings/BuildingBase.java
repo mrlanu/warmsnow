@@ -3,10 +3,16 @@ package io.lanu.warmsnow.common_models.models.buildings;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import io.lanu.warmsnow.common_models.FieldType;
+import io.lanu.warmsnow.common_models.models.BuildingType;
+import io.lanu.warmsnow.common_models.models.Warehouse;
+import io.lanu.warmsnow.common_models.models.buildings.requirements.RequiredBase;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.math.BigDecimal;
+import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 @Data
 @NoArgsConstructor
@@ -14,20 +20,21 @@ import java.util.Map;
 @JsonSubTypes({
         @JsonSubTypes.Type(value = WarehouseBuilding.class, name = "warehouse"),
         @JsonSubTypes.Type(value = Granary.class, name= "granary"),
-        @JsonSubTypes.Type(value = EmptySpot.class, name= "empty-spot"),
+        @JsonSubTypes.Type(value = EmptySpot.class, name= "empty"),
         @JsonSubTypes.Type(value = Barrack.class, name= "barrack"),
-        @JsonSubTypes.Type(value = MainBuilding.class, name= "main-building")
+        @JsonSubTypes.Type(value = MainBuilding.class, name= "main")
 })
 public abstract class BuildingBase {
-    private String buildingType;
+    private BuildingType buildingType;
     private int level;
     private int position;
-    private Map<FieldType, Integer> resourcesToNextLevel;
+    private Map<FieldType, BigDecimal> resourcesToNextLevel;
     private long timeToNextLevel;
     private boolean underUpgrade;
     private boolean ableToUpgrade;
+    private boolean ableToBuild;
 
-    public BuildingBase(String buildingType, int level, int position, Map<FieldType, Integer> resourcesToNextLevel,
+    public BuildingBase(BuildingType buildingType, int level, int position, Map<FieldType, BigDecimal> resourcesToNextLevel,
                         long timeToNextLevel) {
         this.buildingType = buildingType;
         this.level = level;
@@ -36,12 +43,30 @@ public abstract class BuildingBase {
         this.timeToNextLevel = timeToNextLevel;
     }
 
-    public boolean checkUpgrade(){
-        // tester.test();
-        String tester = createTester();
-        System.out.println(tester);
-        return true;
+    public boolean checkUpgrade(List<BuildingBase> existBuildings){
+        return false;
     }
 
-    public abstract String createTester();
+    public void couldBeBuild(List<BuildingBase> existBuildings,
+                             Warehouse warehouse,
+                             Map<FieldType, BigDecimal> needResources){
+        RequiredBase tester = createTester();
+        ableToBuild = tester.check(existBuildings, warehouse, needResources);
+    }
+
+    public abstract RequiredBase createTester();
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        BuildingBase that = (BuildingBase) o;
+        return level == that.level &&
+                buildingType == that.buildingType;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(buildingType, level);
+    }
 }

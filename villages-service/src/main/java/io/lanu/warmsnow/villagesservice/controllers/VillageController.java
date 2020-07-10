@@ -35,8 +35,8 @@ public class VillageController {
         return ResponseEntity.status(HttpStatus.OK).body("New Village ID : " + villageEntity.getVillageId());
     }
 
-    @GetMapping("/buildings")
-    public List<BuildingBase> getAllBuildings(){
-        return templatesServiceFeignClient.getAllBuildings();
+    @GetMapping("/{villageId}/buildings")
+    public List<BuildingBase> getAllBuildings(@PathVariable String villageId){
+        return villageService.getAvailableBuildings(villageId);
     }
 }

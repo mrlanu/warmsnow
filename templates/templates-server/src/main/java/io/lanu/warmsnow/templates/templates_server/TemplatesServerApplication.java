@@ -50,11 +50,11 @@ public class TemplatesServerApplication {
     public CommandLineRunner createSomeBuildingsTemplates() {
         return args -> {
             if (buildingsService.getAllBuildings().size() == 0){
-                Map<FieldType, Integer> toNextLevel = Map.of(
-                        FieldType.WOOD, 200,
-                        FieldType.CLAY, 200,
-                        FieldType.IRON, 200,
-                        FieldType.CROP, 200);
+                Map<FieldType, BigDecimal> toNextLevel = Map.of(
+                        FieldType.WOOD, BigDecimal.valueOf(200),
+                        FieldType.CLAY, BigDecimal.valueOf(200),
+                        FieldType.IRON, BigDecimal.valueOf(200),
+                        FieldType.CROP, BigDecimal.valueOf(200));
                 WarehouseBuildingTemplateEntity warehouse =
                         new WarehouseBuildingTemplateEntity(1, 0, toNextLevel, 60, 750);
                 BarrackTemplateEntity barrack =
@@ -109,8 +109,9 @@ public class TemplatesServerApplication {
                 );
                 List<BuildingBase> buildings = Arrays.asList(
                         new EmptySpot(0, 0, null, 0),
-                        new MainBuilding(1, 1, Map.of(FieldType.WOOD, 200, FieldType.CLAY, 200,
-                                FieldType.IRON, 200, FieldType.CROP, 200), 60, 2),
+                        new MainBuilding(1, 1, Map.of(FieldType.WOOD, BigDecimal.valueOf(200), FieldType.CLAY,
+                                BigDecimal.valueOf(200), FieldType.IRON, BigDecimal.valueOf(200),
+                                FieldType.CROP, BigDecimal.valueOf(200)), 60, 2),
                         new EmptySpot(0, 2, null, 0),
                         new EmptySpot(0, 3, null, 0)
                 );

@@ -1,20 +1,26 @@
 package io.lanu.warmsnow.common_models.models.buildings;
 
 import io.lanu.warmsnow.common_models.FieldType;
+import io.lanu.warmsnow.common_models.models.BuildingType;
+import io.lanu.warmsnow.common_models.models.buildings.requirements.RequiredBase;
+import io.lanu.warmsnow.common_models.models.buildings.requirements.WarehouseReq;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 
+import java.math.BigDecimal;
 import java.util.Map;
 
-@EqualsAndHashCode(callSuper = true)
-@Data
+@Getter
+@Setter
 public class EmptySpot extends BuildingBase {
-    public EmptySpot(int level, int position, Map<FieldType, Integer> resourcesToNextLevel, long timeToNextLevel) {
-        super("empty-spot", level, position, resourcesToNextLevel, timeToNextLevel);
+    public EmptySpot(int level, int position, Map<FieldType, BigDecimal> resourcesToNextLevel, long timeToNextLevel) {
+        super(BuildingType.EMPTY, level, position, resourcesToNextLevel, timeToNextLevel);
     }
 
     @Override
-    public String createTester() {
-        return null;
+    public RequiredBase createTester() {
+        return new WarehouseReq();
     }
 }

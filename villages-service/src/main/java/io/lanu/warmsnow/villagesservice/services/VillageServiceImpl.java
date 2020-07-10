@@ -10,6 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -47,6 +48,11 @@ public class VillageServiceImpl implements VillageService {
 
     @Override
     public List<BuildingBase> getAvailableBuildings(String villageId) {
-        return templatesFeignClient.getAllBuildings();
+        List<BuildingBase> buildings = templatesFeignClient.getAllBuildings();
+        VillageEntity villageEntity = villageRepository.findById(villageId).get();
+        return buildings
+                .stream()
+                .peek(b -> b.couldBeBuild(villageEntity.getBuildings(), villageEntity.getWarehouse(), b.getResourcesToNextLevel()))
+                .collect(Collectors.toList());
     }
 }
