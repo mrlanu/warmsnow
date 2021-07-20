@@ -5,6 +5,9 @@ import io.lanu.warmsnow.common_models.models.Army;
 import io.lanu.warmsnow.common_models.models.Field;
 import io.lanu.warmsnow.common_models.models.ProducePerHour;
 import io.lanu.warmsnow.common_models.models.Warehouse;
+import io.lanu.warmsnow.common_models.models.buildings.BuildingBase;
+import io.lanu.warmsnow.common_models.models.buildings.EmptySpot;
+import io.lanu.warmsnow.common_models.models.buildings.MainBuilding;
 import io.lanu.warmsnow.villagesservice.clients.ArmiesServiceFeignClient;
 import io.lanu.warmsnow.villagesservice.clients.ConstructionsServiceFeignClient;
 import io.lanu.warmsnow.villagesservice.clients.TemplatesServiceFeignClient;
@@ -78,11 +81,21 @@ public class ServiceBaseTest {
                         false, false, 30, resourcesToNextLevel)
         );
 
+        List<BuildingBase> buildings = Arrays.asList(
+                new EmptySpot(0, 0, null, 0),
+                new MainBuilding(1, 1, Map.of(FieldType.WOOD, BigDecimal.valueOf(200),
+                        FieldType.CLAY, BigDecimal.valueOf(200), FieldType.IRON, BigDecimal.valueOf(200),
+                        FieldType.CROP, BigDecimal.valueOf(200)), 60, 2),
+                new EmptySpot(0, 2, null, 0),
+                new EmptySpot(0, 3, null, 0)
+        );
+
         villageEntity.setWarehouse(warehouse);
         villageEntity.setProducePerHour(producePerHour);
         villageEntity.setModified(nowTime);
         villageEntity.setArmy(new Army());
         villageEntity.setFields(fields);
+        villageEntity.setBuildings(buildings);
 
         return villageEntity;
     }

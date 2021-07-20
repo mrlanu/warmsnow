@@ -9,25 +9,26 @@ import io.lanu.warmsnow.villagesservice.entities.VillageEntity;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentMatchers;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.BDDMockito.given;
 
 class VillageServiceImplTest extends ServiceBaseTest{
 
     @Test
     void getAllAvailableBuildings() {
-        Map<FieldType, Integer> toNextLevel = Map.of(
-                FieldType.WOOD, 200,
-                FieldType.CLAY, 200,
-                FieldType.IRON, 200,
-                FieldType.CROP, 200);
+        Map<FieldType, BigDecimal> toNextLevel = Map.of(
+                FieldType.WOOD, BigDecimal.valueOf(20),
+                FieldType.CLAY, BigDecimal.valueOf(20),
+                FieldType.IRON, BigDecimal.valueOf(20),
+                FieldType.CROP, BigDecimal.valueOf(20));
         List<BuildingBase> buildingsList = Arrays.asList(
                 new WarehouseBuilding(1, 0, toNextLevel, 60, 750),
                 new Barrack(1, 0, toNextLevel, 60, 1),
@@ -40,10 +41,15 @@ class VillageServiceImplTest extends ServiceBaseTest{
         given(this.villageRepository.findById(ArgumentMatchers.any())).willReturn(Optional.of(villageEntity));
 
         // when
+        // get all buildings
         List<BuildingBase> buildings = villageService.getAvailableBuildings("test");
 
         // then
-        System.out.println(buildings);
         assertEquals(3, buildings.size());
+
+        List<BuildingBase> ableToBuildList = buildings.stream().filter(BuildingBase::isAbleToBuild).collect(Collectors.toList());
+        List<BuildingBase> unableToBuildList = buildings.stream().filter(b -> !b.isAbleToBuild()).collect(Collectors.toList());
+        assertEquals(2, ableToBuildList.size());
+        assertEquals(1, unableToBuildList.size());
     }
 }
